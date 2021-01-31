@@ -960,6 +960,20 @@ setlistener("/VC10/oil/oil-test", func(pos){
 },1,0);
 
 #################################### CROSSFEED ANIMATION ############################################
+### polly copied from 707 to get autostart.nas to work
+var valve_pos = func(nr){ 
+	if(getprop("/VC10/ess-bus") > 24){
+		setprop("/VC10/fuel/valves/valve-pos["~nr~"]", 0);
+		settimer( func { setprop("/VC10/fuel/valves/valve-pos["~nr~"]", 1) }, 1.8 );	
+	}else{
+		screen.log.write("No electrical power!", 1, 0, 0);
+	}
+}
+
+var shutoff_pos = func(nr) {
+	setprop("/VC10/fuel/valves/fuel-shutoff-pos["~nr~"]", 0);
+	settimer( func { setprop("/VC10/fuel/valves/fuel-shutoff-pos["~nr~"]", 1) }, 1.8 );
+}
 
 var crossfeed_control_valves = func (tanknr) {
 	var fq = getprop("/consumables/fuel/tank["~tanknr~"]/level-lbs") or 0;
