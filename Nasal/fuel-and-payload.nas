@@ -675,6 +675,29 @@ var calc_fuel = func{
  	tfR4.setValue(cfuel * 0.0184);  
 }
 
+var mini_fuel = func{
+  print('mini_fuel()');
+	# how many fuel is inside the tanks
+  var cfuel  = 0;
+  var cfuel += tfR1.getValue() or 0;
+  var cfuel += tfM1.getValue() or 0;
+  var cfuel += tfM2.getValue() or 0;
+  var cfuel += tfC.getValue()  or 0;
+  var cfuel += tfM3.getValue() or 0;
+  var cfuel += tfM4.getValue() or 0;
+  var cfuel += tfR4.getValue() or 0;
+  
+ 	# refill the tanks for minimum wing inertia
+ 	tfR1.setValue(cfuel * 0.0050);
+ 	tfM1.setValue(cfuel * 0.0200); 
+ 	tfM2.setValue(cfuel * 0.0200); 
+ 	tfC.setValue(cfuel  * 0.9100); 
+ 	tfM3.setValue(cfuel * 0.0200); 
+ 	tfM4.setValue(cfuel * 0.0200); 
+ 	tfR4.setValue(cfuel * 0.0050);
+  settimer(mini_fuel, 60);
+}
+
 var standard_load = func{
 	var st = getprop("/VC10/standard-load") or 0;
   if(!st){
@@ -759,6 +782,12 @@ setlistener("/fdm/jsbsim/inertia/weight-lbs", func(wlbs){
 engine_for_tank = [ -1, 0, 1,   -1  , 2, 3, -1 ]; # -1 means no engine connected to that tank 
 boost_pumps_for_tank = [ [-1,-1], [0,1], [2,3], [4,5], [6,7], [8,9], [-1,-1] ];
 
+# polly minimise wing moment
+print('Call mini_fuel()');
+VC10.mini_fuel();
+#
+
+
 var boost_pumps_for_tank_are_on = func (tank)
 {
   if (boost_pumps_for_tank[tank][0] == -1 or boost_pumps_for_tank[tank][1] == -1) {
@@ -787,7 +816,7 @@ var boost_pumps_for_engine = func (engine) {
 }
 
 var engines_alive = maketimer (8.0, func {
-
+  
   # control the engine dependens
   foreach(var e; props.globals.getNode("/engines").getChildren("engine")) {
 		  var n2_node = e.getNode("n2");
@@ -960,6 +989,20 @@ setlistener("/VC10/oil/oil-test", func(pos){
 },1,0);
 
 #################################### CROSSFEED ANIMATION ############################################
+### polly copied from 707 to get autostart.nas to work
+var valve_pos = func(nr){ 
+	if(getprop("/VC10/ess-bus") > 24){
+		setprop("/VC10/fuel/valves/valve-pos["~nr~"]", 0);
+		settimer( func { setprop("/VC10/fuel/valves/valve-pos["~nr~"]", 1) }, 1.8 );	
+	}else{
+		screen.log.write("No electrical power!", 1, 0, 0);
+	}
+}
+
+var shutoff_pos = func(nr) {
+	setprop("/VC10/fuel/valves/fuel-shutoff-pos["~nr~"]", 0);
+	settimer( func { setprop("/VC10/fuel/valves/fuel-shutoff-pos["~nr~"]", 1) }, 1.8 );
+}
 
 var crossfeed_control_valves = func (tanknr) {
 	var fq = getprop("/consumables/fuel/tank["~tanknr~"]/level-lbs") or 0;

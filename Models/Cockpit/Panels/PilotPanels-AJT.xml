@@ -283,17 +283,6 @@ if you contacted me before making any changes to this software.
 
 
 	<!-- Centre Panel -->
-  <!--  polly wants glareshield A/P    -->
-	<model>
-		<name>Autopilot Helper</name>
-		<path>Aircraft/VC10/Models/Cockpit/Instruments/ap/ap-fg.xml</path>
-		<offsets>
-			<x-m>0.0</x-m>
-			<y-m>-0.290</y-m>
-			<z-m>-0.015</z-m>
-		</offsets>
-	</model>
-	
 	<model>
 		<name>gear_handle</name>
 		<path>Aircraft/VC10/Models/Cockpit/Panels/gear-handle.xml</path>
@@ -874,7 +863,7 @@ if you contacted me before making any changes to this software.
 	</model>
 
 
-	<!-- center top panel -->
+	<!-- centre top panel -->
 
 	<model>
 		<name>firewarning_lamps</name>
