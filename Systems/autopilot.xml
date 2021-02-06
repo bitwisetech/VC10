@@ -41,9 +41,10 @@ if you contacted me before making any changes to this software.
   <!-- Heading Bug Hold.  2 stage cascade controller. -->
 
   <filter>
+	<type>gain</type>
+	<!--name>heading bug error computer/normalizer</name-->
 	<name>filt-HdgBugErr180</name>
 	<debug>false</debug>
-	<type>gain</type>
 	<input>
 		<property>/autopilot/settings/heading-bug-deg</property>
 		<offset>
@@ -152,10 +153,12 @@ if you contacted me before making any changes to this software.
   </pi-simple-controller>
 
   <filter>
+	<type>noise-spike</type>
+  <!-- tbd polly 707: added nav1 and max min 6.0 deg Sec    -->
+	<!--name>filter - true-heading</name-->
 	<name>FltRoC-TgtRolUnf</name>
 	<debug>false</debug>
 	<feedback-if-disabled>true</feedback-if-disabled>
-	<type>noise-spike</type>
 	<enable>
 		<condition>
 			<or>
@@ -178,9 +181,10 @@ if you contacted me before making any changes to this software.
 
   <!-- noise-spike filter to limit change of 'wing-leveler-target-roll-deg' -->
   <filter>
+	<type>noise-spike</type>
+	<!--name>wing-leveler filter</name-->
 	<name>FltRoC-WngLvlTgtRol</name>
 	<debug>false</debug>
-	<type>noise-spike</type>
 	<enable>
 		<equals>
 			<property>/autopilot/locks/heading</property>
@@ -369,9 +373,10 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
+		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:aileron</name-->
 		<name>FltRoC-AilSrv</name>
 		<debug>false</debug>
-		<type>noise-spike</type>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
 			<condition>
@@ -557,9 +562,10 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
+		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:rudder heading-bug</name-->
 		<name>RdrSrvDrv</name>
 		<debug>false</debug>
-		<type>noise-spike</type>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
 			<condition>
@@ -808,16 +814,16 @@ if you contacted me before making any changes to this software.
         <property>/systems/tune/pids-vrt2-open</property>
         <value>1</value>
       </condition>
-      <property>/systems/tune/poke-vert-mark</property>
-    </reference>
-    <reference>
     <expression>
       <product>
         <!-- Max poke 1.0 * 80  4800fps -->
-        <property>/autopilot/internal/target-climb-rate-fps</property>
+        <property>/systems/tune/poke-vert-mark</property>
         <value>80.0</value>
       </product>  
 	  </expression>
+    </reference>
+    <reference>
+        <property>/autopilot/internal/target-climb-rate-fps</property>
     </reference>
     <output>
       <property>/autopilot/internal/elevator-servo</property>
@@ -989,8 +995,9 @@ if you contacted me before making any changes to this software.
   <!-- filter for adjustment of elevator position.                     -->
   <!-- =============================================================== -->
 	<filter>
-		<name>ElvUpFltNasNoNo</name>
 		<type>gain</type>
+		<!--name>elevator-adjust (altitude/vspeed)</name-->
+		<name>ElvUpFlt</name>
 		<debug>false</debug>
 		<enable>
 			<condition>
@@ -1062,9 +1069,10 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
+		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:elevator-trim (altitude/vspeed)</name-->
 		<name>ElvSrvDrvAltVs</name>
 		<debug>false</debug>
-		<type>noise-spike</type>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
 			<condition>
@@ -1406,9 +1414,10 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
-		<name>SERVO-DRIVER:throttle</name>
-		<debug>false</debug>
 		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:throttle</name-->
+		<name>ThrtSrvDrv</name>
+		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
 			<condition>
