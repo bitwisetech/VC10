@@ -9,19 +9,6 @@
 <debug type="bool">false</debug>
 
   <filter>
-    <name>xbar-Lat1-Err</name>
-		<debug type="bool">false</debug>
-    <type>gain</type>
-    <gain>1.0</gain>
-    <input>
-		  <property>/systems/tune/pids-lat1-err</property>
-    </input>
-    <output>
-		  <property>/systems/tune/afdi-Ch0</property>
-    </output>
-  </filter>
-
-  <filter>
     <name>xbar-Lat1-Out</name>
 		<debug type="bool">false</debug>
     <type>gain</type>
@@ -30,16 +17,29 @@
 		  <property>/systems/tune/pids-lat1-out</property>
     </input>
     <output>
+		  <property>/systems/tune/afdi-Ch0</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Lat2-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-lat2-out</property>
+    </input>
+    <output>
 		  <property>/systems/tune/afdi-Ch1</property>
     </output>
   </filter>
 
   <filter>
-    <name>xbar-Lat2-Err</name>
+    <name>xbar-Lat3-Out</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <property>/systems/tune/pids-lat2-err</property>
+		  <property>/systems/tune/pids-lat3-out</property>
     </input>
     <output>
 			<property>/systems/tune/afdi-Ch2</property>
@@ -47,11 +47,11 @@
   </filter>
 
   <filter>
-    <name>xbar-Lat2-Out</name>
+    <name>xbar-Lat4-Out</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <!--property>/systems/tune/pids-lat2-out</property-->
+		  <!--property>/systems/tune/pids-lat4-out</property-->
       <value>0</value>
     </input>
     <output>
@@ -128,12 +128,12 @@
   <!--    -->
   
   <filter>
-    <name>xbar-Vrt1-Err</name>
+    <name>xbar-Vrt1-Out</name>
 		<debug type="bool">false</debug>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <property>/systems/tune/pids-vrt1-err</property>
+		  <property>/systems/tune/pids-vrt1-out</property>
 		  <!--property>/autopilot/settings/target-altitude-ft</property-->
     </input>
     <output>
@@ -142,12 +142,12 @@
   </filter>
 
   <filter>
-    <name>xbar-Vrt1-Out</name>
+    <name>xbar-Vrt2-Out</name>
 		<debug type="bool">false</debug>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <property>/systems/tune/pids-vrt1-out</property>
+		  <property>/systems/tune/pids-vrt2-out</property>
     </input>
     <output>
 		  <property>/systems/tune/afdi-ChA</property>
@@ -155,12 +155,12 @@
   </filter>
 
   <filter>
-    <name>xbar-Vrt2-Err</name>
+    <name>xbar-Vrt3-Out</name>
 		<debug type="bool">false</debug>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <property>/systems/tune/pids-vrt2-err</property>
+		  <property>/systems/tune/pids-vrt3-out</property>
     </input>
     <output>
 			<property>/systems/tune/afdi-ChB</property>
@@ -168,11 +168,11 @@
   </filter>
 
   <filter>
-    <name>xbar-Vrt2-Out</name>
+    <name>xbar-Vrt4-Out</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-		  <property>/systems/tune/pids-vrt2-out</property>
+		  <property>/systems/tune/pids-vrt4-out</property>
     </input>
     <output>
 			<property>/systems/tune/afdi-ChC</property>
