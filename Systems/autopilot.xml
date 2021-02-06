@@ -41,10 +41,10 @@ if you contacted me before making any changes to this software.
   <!-- Heading Bug Hold.  2 stage cascade controller. -->
 
   <filter>
-	<!--name>heading bug error computer/normalizer</name-->
-	<name>Flt:HdgBugErr180</name>
-	<debug>false</debug>
 	<type>gain</type>
+	<!--name>heading bug error computer/normalizer</name-->
+	<name>filt-HdgBugErr180</name>
+	<debug>false</debug>
 	<input>
 		<property>/autopilot/settings/heading-bug-deg</property>
 		<offset>
@@ -153,9 +153,10 @@ if you contacted me before making any changes to this software.
   </pi-simple-controller>
 
   <filter>
+	<type>noise-spike</type>
   <!-- tbd polly 707: added nav1 and max min 6.0 deg Sec    -->
 	<!--name>filter - true-heading</name-->
-	<name>FltRoC:TgtRolUnf=>TgtRolDeg</name>
+	<name>FltRoC-TgtRolUnf</name>
 	<debug>false</debug>
 	<feedback-if-disabled>true</feedback-if-disabled>
 	<enable>
@@ -174,17 +175,16 @@ if you contacted me before making any changes to this software.
 	</enable>
 	<input>/autopilot/internal/target-roll-deg-unfiltered</input>
 	<output>/autopilot/internal/target-roll-deg</output>
-	<type>noise-spike</type>
 	<max-rate-of-change>3.0</max-rate-of-change>
 	<!-- polly max-rate-of-change>6.0</max-rate-of-change-->
   </filter>
 
   <!-- noise-spike filter to limit change of 'wing-leveler-target-roll-deg' -->
   <filter>
-	<!--name>wing-leveler filter</name-->
-	<name>FltRoC:WngLvlTgtRol=>TgtRolFltd</name>
-	<debug>false</debug>
 	<type>noise-spike</type>
+	<!--name>wing-leveler filter</name-->
+	<name>FltRoC-WngLvlTgtRol</name>
+	<debug>false</debug>
 	<enable>
 		<equals>
 			<property>/autopilot/locks/heading</property>
@@ -281,10 +281,12 @@ if you contacted me before making any changes to this software.
     <condition>
       <property>/systems/tune/pids-lat2-open</property>
     </condition>
-    <product>
-      <property>/systems/tune/poke-latr-mark</property>
-      <value>50.0</value>
-    </product>
+    <expression>
+      <product>
+        <property>/systems/tune/poke-latr-mark</property>
+        <value>50.0</value>
+      </product>
+    </expression>
   </reference>
 	<reference>
 		<condition>
@@ -358,7 +360,8 @@ if you contacted me before making any changes to this software.
 		<beta>1.0</beta>
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
-		<Ti>/autopilot/internal/target-ti-for-heading-hold</Ti>
+		<!--Ti>/autopilot/internal/target-ti-for-heading-hold</Ti-->
+		<Ti>10.0</Ti>
 		<Td>0.05</Td>
 		<u_min>-1.0</u_min>
 		<u_max>1.0</u_max>
@@ -370,8 +373,9 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
+		<type>noise-spike</type>
 		<!--name>SERVO-DRIVER:aileron</name-->
-		<name>FltRoC:AilSrv=>Ail</name>
+		<name>FltRoC-AilSrv</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -399,7 +403,6 @@ if you contacted me before making any changes to this software.
 		<input>/autopilot/internal/aileron-servo</input>
 		<output>/controls/flight/aileron</output>
 		<output>/controls/flight/aileron-fcs</output>
-		<type>noise-spike</type>
 		<!-- polly max-rate-of-change>0.8</max-rate-of-change-->
 		<max-rate-of-change>1.6</max-rate-of-change>
 	</filter>
@@ -559,7 +562,9 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
-		<name>SERVO-DRIVER:rudder heading-bug</name>
+		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:rudder heading-bug</name-->
+		<name>RdrSrvDrv</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -587,7 +592,6 @@ if you contacted me before making any changes to this software.
 		<input>/autopilot/internal/rudder-servo</input>
 		<output>/controls/flight/rudder</output>
 		<output>/controls/flight/rudder-fcs</output>
-		<type>noise-spike</type>
 		<max-rate-of-change>0.08</max-rate-of-change>
 	</filter>
 
@@ -712,10 +716,12 @@ if you contacted me before making any changes to this software.
       <condition>
         <property>/systems/tune/pids-vrt1-open</property>
       </condition>
-      <product>      
-        <property>/systems/tune/poke-vert-mark</property>
-        <value>100</value>
-      </product>      
+      <expression>
+       <product>      
+         <property>/systems/tune/poke-vert-mark</property>
+         <value>100</value>
+       </product>      
+      </expression>
     </reference>
     <reference>
       <prop>/autopilot/settings/target-altitude-ft</prop>
@@ -729,11 +735,11 @@ if you contacted me before making any changes to this software.
 		  <property>/systems/tune/pids-vrt1-err</property>
 	  </output>
     <config>
-      <Kp>0.01</Kp>
-      <Ti>2.000</Ti>
-      <Td>0.001</Td>
+      <Kp>0.200</Kp>
+      <Ti>4.000</Ti>
+      <Td>0.011</Td>
       <alpha>0.100</alpha>
-      <beta>00.010</beta>
+      <beta>1.000</beta>
       <gamma>1.000</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
       <u_max>50.0</u_max>   <!-- maximum output clamp -->
@@ -808,10 +814,16 @@ if you contacted me before making any changes to this software.
         <property>/systems/tune/pids-vrt2-open</property>
         <value>1</value>
       </condition>
-      <property>/systems/tune/poke-vert-mark</property>
+    <expression>
+      <product>
+        <!-- Max poke 1.0 * 80  4800fps -->
+        <property>/systems/tune/poke-vert-mark</property>
+        <value>80.0</value>
+      </product>  
+	  </expression>
     </reference>
     <reference>
-      <property>/autopilot/internal/target-climb-rate-fps</property>
+        <property>/autopilot/internal/target-climb-rate-fps</property>
     </reference>
     <output>
       <property>/autopilot/internal/elevator-servo</property>
@@ -822,7 +834,7 @@ if you contacted me before making any changes to this software.
 	  </output>
     <config>
       <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
-      <Kp>-0.0010</Kp>
+      <Kp>-0.010</Kp>
       <beta>1.0</beta>    <!-- input value weighing factor -->
       <alpha>0.1</alpha>  <!-- low pass filter weighing factor -->
       <gamma>0.0</gamma>  <!-- input value weighing factor for -->
@@ -983,8 +995,9 @@ if you contacted me before making any changes to this software.
   <!-- filter for adjustment of elevator position.                     -->
   <!-- =============================================================== -->
 	<filter>
+		<type>gain</type>
 		<!--name>elevator-adjust (altitude/vspeed)</name-->
-		<name>ElvUpFltNasNoNo</name>
+		<name>ElvUpFlt</name>
 		<debug>false</debug>
 		<enable>
 			<condition>
@@ -1044,7 +1057,6 @@ if you contacted me before making any changes to this software.
         <value>0</value>
 			</condition>
 		</enable>
-		<type>gain</type>
 		<gain>1.0</gain>
 		<input>
 			<property>/autopilot/internal/elevator-position</property>
@@ -1057,8 +1069,9 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
+		<type>noise-spike</type>
 		<!--name>SERVO-DRIVER:elevator-trim (altitude/vspeed)</name-->
-		<name>Elv-Srv_Drv-ALT-VS</name>
+		<name>ElvSrvDrvAltVs</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -1106,7 +1119,6 @@ if you contacted me before making any changes to this software.
 		</input>
 		<output>/controls/flight/elevator</output>
 		<output>/controls/flight/elevator-fcs</output>
-		<type>noise-spike</type>
     <max-rate-of-change>0.2</max-rate-of-change>
 	</filter>
 
@@ -1228,8 +1240,9 @@ if you contacted me before making any changes to this software.
 	</pid-controller>
 
 	<filter>
-		<name>Filter - speed with pitch</name>
+		<name>FltSpdPit</name>
 		<debug>false</debug>
+		<type>noise-spike</type>
 		<feedback-if-disabled>true</feedback-if-disabled>
 	        <enable>
 			<condition>
@@ -1241,7 +1254,6 @@ if you contacted me before making any changes to this software.
 	        </enable>
 		<input>/autopilot/internal/speed-with-pitch-pitch-deg</input>
 		<output>/autopilot/internal/speed-with-pitch-pitch-deg-filtered</output>
-		<type>noise-spike</type>
 		<max-rate-of-change>0.5</max-rate-of-change>
 	</filter>
 
@@ -1402,7 +1414,9 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 
 	<filter>
-		<name>SERVO-DRIVER:throttle</name>
+		<type>noise-spike</type>
+		<!--name>SERVO-DRIVER:throttle</name-->
+		<name>ThrtSrvDrv</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -1446,7 +1460,6 @@ if you contacted me before making any changes to this software.
 			<property>/controls/engines/engine[2]/throttle</property>
 			<property>/controls/engines/engine[3]/throttle</property>
 		</output>
-		<type>noise-spike</type>
 		<max-rate-of-change>0.1</max-rate-of-change>
 	</filter>
 
