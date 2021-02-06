@@ -675,27 +675,44 @@ var calc_fuel = func{
  	tfR4.setValue(cfuel * 0.0184);  
 }
 
-var mini_fuel = func{
-  print('mini_fuel()');
+var norm_fuel = func{
+  # presets lbs fuel for wing tanks 
+  var adj_resv  = 200;
+  var adj_outer = 300;
+  var adj_inner = 500;
+  var adj_total = ( 2 * adj_resv ) + ( 2 * adj_outer ) + ( 2 * adj_inner );
+  #
 	# how many fuel is inside the tanks
-  var cfuel  = 0;
-  var cfuel += tfR1.getValue() or 0;
-  var cfuel += tfM1.getValue() or 0;
-  var cfuel += tfM2.getValue() or 0;
-  var cfuel += tfC.getValue()  or 0;
-  var cfuel += tfM3.getValue() or 0;
-  var cfuel += tfM4.getValue() or 0;
-  var cfuel += tfR4.getValue() or 0;
-  
+  var fuel_lbs  = 0;
+  var fuel_lbs += tfR1.getValue() or 0;
+  var fuel_lbs += tfM1.getValue() or 0;
+  var fuel_lbs += tfM2.getValue() or 0;
+  var fuel_lbs += tfC.getValue()  or 0;
+  var fuel_lbs += tfM3.getValue() or 0;
+  var fuel_lbs += tfM4.getValue() or 0;
+  var fuel_lbs += tfR4.getValue() or 0;
+  #
+  if (fuel_lbs > (10 *adj_total )) {
+ 	  tfR1.setValue(adj_resv);
+ 	  tfM1.setValue(adj_outer); 
+ 	  tfM2.setValue(adj_inner); 
+ 	  tfC.setValue(fuel_lbs - adj_total); 
+ 	  tfM3.setValue(adj_inner); 
+ 	  tfM4.setValue(adj_outer); 
+ 	  tfR4.setValue(adj_resv);
+    #print("Center Fuel: ", (fuel_lbs - adj_total) );
+  } else {
  	# refill the tanks for minimum wing inertia
- 	tfR1.setValue(cfuel * 0.0050);
- 	tfM1.setValue(cfuel * 0.0200); 
- 	tfM2.setValue(cfuel * 0.0200); 
- 	tfC.setValue(cfuel  * 0.9100); 
- 	tfM3.setValue(cfuel * 0.0200); 
- 	tfM4.setValue(cfuel * 0.0200); 
- 	tfR4.setValue(cfuel * 0.0050);
-  settimer(mini_fuel, 60);
+ 	  tfR1.setValue(fuel_lbs * 0.050);
+ 	  tfM1.setValue(fuel_lbs * 0.100); 
+ 	  tfM2.setValue(fuel_lbs * 0.100); 
+ 	  tfC.setValue(fuel_lbs  * 0.500); 
+ 	  tfM3.setValue(fuel_lbs * 0.100); 
+ 	  tfM4.setValue(fuel_lbs * 0.100); 
+ 	  tfR4.setValue(fuel_lbs * 0.050);
+    print("Fuel Bingo");
+  }
+  settimer(norm_fuel, 60);
 }
 
 var standard_load = func{
@@ -783,8 +800,7 @@ engine_for_tank = [ -1, 0, 1,   -1  , 2, 3, -1 ]; # -1 means no engine connected
 boost_pumps_for_tank = [ [-1,-1], [0,1], [2,3], [4,5], [6,7], [8,9], [-1,-1] ];
 
 # polly minimise wing moment
-print('Call mini_fuel()');
-VC10.mini_fuel();
+VC10.norm_fuel();
 #
 
 

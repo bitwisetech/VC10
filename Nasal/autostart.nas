@@ -408,7 +408,7 @@ var startup = func
 		 	if(step == 6 and auto_procedure.getValue()) {
 				setprop("VC10/ground-connect", 1);
 				toggle_switch2();
-				screen.log.write("External Power Unit connected!", 1, 1, 1);
+				screen.log.write("External Power Unit connected ", 1, 1, 1);
 			}else{
 				step = 0;
 				screen.log.write(" No External Power Unit found on bus - startup interrupted ", 1, 0, 0);
@@ -683,7 +683,7 @@ var startup = func
 				setprop("VC10/fuel/valves/boost-pump[0]", 1);
 				toggle_switch2();
 
-				screen.log.write("Boost pumps controll!", 1, 1, 1);
+				screen.log.write("Boost pumps control ", 1, 1, 1);
 			}
 		}, t); t += 0.2;
 		settimer( func{
@@ -831,7 +831,7 @@ var startup = func
 				setprop("VC10/start/startercover[2]", 1);
 				toggle_switch3();
 
-				screen.log.write("Engine 3!", 1, 1, 1);
+				screen.log.write("Engine 3 ", 1, 1, 1);
 			}
 		}, t); t += 0.5;
 		settimer( func{
@@ -860,7 +860,7 @@ var startup = func
 				setprop("VC10/start/startercover[3]", 1);
 				toggle_switch3();
 
-				screen.log.write("Engine 4!", 1, 1, 1);
+				screen.log.write("Engine 4 ", 1, 1, 1);
 			}
 		}, t); t += 0.5;
 		settimer( func{
@@ -889,7 +889,7 @@ var startup = func
 				setprop("VC10/start/startercover[1]", 1);
 				toggle_switch3();
 
-				screen.log.write("Engine 2!", 1, 1, 1);
+				screen.log.write("Engine 2 ", 1, 1, 1);
 			}
 		}, t); t += 0.5;
 		settimer( func{
@@ -918,7 +918,7 @@ var startup = func
 				setprop("VC10/start/startercover[0]", 1);
 				toggle_switch3();
 
-				screen.log.write("Engine 1!", 1, 1, 1);
+				screen.log.write("Engine 1 ", 1, 1, 1);
 			}
 		}, t); t += 0.5;
 		settimer( func{
@@ -1139,7 +1139,7 @@ var startup = func
 				setprop("VC10/ground-connect", 0);
 				toggle_switch2();
 				
-				screen.log.write("External Power Unit disconnected! Continue the startup procedure.", 1, 1, 1);
+				screen.log.write("External Power Unit disconnected, continuing startup ", 1, 1, 1);
 			}
 		}, t); t += 1.0;
 	
@@ -1283,7 +1283,7 @@ var startup = func
 				setprop("instrumentation/compass-control/mag/", 0);
 				setprop("instrumentation/compass-control/lat-turn/", math.round(getprop("/position/latitude-deg")));
 
-				screen.log.write("Startup procedure was successful. It is now in your control! Do not forget to inform the Tower about your intentions.", 1, 1, 1);
+				screen.log.write("Startup procedure was successful. It is now in your control  Do not forget to inform the Tower about your intentions.", 1, 1, 1);
 				
 			}
 		}, t); t += 0.2;
@@ -1348,7 +1348,7 @@ var startup = func
 			}, t);
 		
 	}else{
-		screen.log.write("The Automatical Start Procedure is allready running. Please wait!", 1, 0, 0);
+		screen.log.write("The Automatical Start Procedure is allready running. Please wait ", 1, 0, 0);
 	}
  };
 
