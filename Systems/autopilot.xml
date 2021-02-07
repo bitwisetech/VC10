@@ -28,40 +28,40 @@ if you contacted me before making any changes to this software.
 <!-- property names to pass the result of one component on to a subsequent -->
 <!-- component. -->
 
-<!--    ===============================         -->
-<!--    ==== A/P Lateral Modes   ======         -->
-<!--    ===============================         -->
-<!--                                            -->
-<!--   92 Flt-RoC-RolKnob   =>  TgtRolDeg~P1L2   -->   
-<!--  128 Flt-HdgErr|180|   =>  HdgBugErrDeg     -->   
-<!--  149 PIS-DGHdgErr      =>  TgtRolUnf~L1     -->   
-<!--  197 PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
-<!--  239 Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
-<!--  282 PID-Nv1HdgErr     =>  TgtRolDeg~P1L2   -->   
-<!--  324 PID-TgtRolDeg     =>  AilrSrvo~L3      -->   
-<!--  414 Flt-RoC-AilSrv    =>  AilrFCS          -->   
-<!--  453 PIS-RollDeg       =>  RddrSrv~L4       -->   
-<!--  510 PID-SlipBall      =>  RddrSrv(Dsbld)   -->   
-<!--  567 Flt-RoC-RdrSrv    =>  RdrFCS           -->   
-<!--  601 PID-YDSkidBall    =>  RdrTrm~L5        -->   
-<!--                                            -->
-<!--    ===============================         -->
-<!--                                            -->
-<!--    ===============================         -->
-<!--    ==== A/P Vertical Modes  ======         -->
-<!--    ===============================         -->
-<!--                                            -->
-<!--  641 PID-TgtPit        =>  ElvSrv~V2        -->
-<!--  689 PID-TgtAoA        =>  ElvSrv~V2        -->
-<!--  740 PID-AltHldErr     =>  TgtFps~V1        -->
-<!--  792 PIS-AGLHld        =>  TgtFps~V1        -->  
-<!--  834 PID-TgtFps        =>  ElvSrv~V2        -->
-<!--  896 PID-GSRoCErr      =>  ElvSrv~V2        -->
-<!--  949 PID-VSHldFps      =>  ElvSrv~V2        -->
-<!-- 1002 PID-VSpdPit       =>  ThrSrv           -->
-<!-- 1046 Flt-RoC-ElvPosn   =>  ElvNasNoNo       -->
-<!-- 1119 Flt-RocElvSrv     =>  ElvFCS           -->
-<!-- 1176 PID-ElvSrv        =>  ElVTrmFCS~V3     -->
+<!--    ===============================          -->
+<!--    ==== A/P Lateral Modes   ======          -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--      Flt-RoC-RolKnob   =>  TgtRolDeg~L2     -->   
+<!--      Flt-HdgErr|180|   =>  HdgBugErrDeg     -->   
+<!--      PIS-DGHdgErr      =>  TgtRolUnf~L1     -->   
+<!--      PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
+<!--      Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
+<!--      PID-Nv1HdgErr     =>  TgtRolDeg~L2     -->   
+<!--      PID-TgtRolDeg     =>  AilrSrvo~L3      -->   
+<!--      Flt-RoC-AilSrv    =>  AilrFCS          -->   
+<!--      PIS-RollDeg       =>  RddrSrv~L4       -->   
+<!--      PID-YawDmpSkid    =>  RddrSrv          -->   
+<!--      Flt-RoC-RdrSrv    =>  RdrFCS           -->   
+<!--      PID-YDSkidBall    =>  RdrTrm~L5        -->   
+<!--                                             -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--    ===============================          -->
+<!--    ==== A/P Vertical Modes  ======          -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--      PID-TgtPit        =>  ElvSrv~V2        -->
+<!--      PID-TgtAoA        =>  ElvSrv~V2        -->
+<!--      PID-AltHldErr     =>  TgtFps~V1        -->
+<!--      PIS-AGLHld        =>  TgtFps~V1        -->  
+<!--      PID-TgtFps        =>  ElvSrv~V2        -->
+<!--      PID-GSRoCErr      =>  ElvSrv~V2        -->
+<!--      PID-VSHldFps      =>  ElvSrv~V2        -->
+<!--      PID-VSpdPit       =>  ThrSrv           -->
+<!--      Flt-RoC-ElvPosn   =>  ElvNasNoNo       -->
+<!--      Flt-Roc-ElvSrv    =>  ElvFCS           -->
+<!--      PID-ElvSrv        =>  ElVTrmFCS~V3     -->
 <!--                                             -->
 <!--    ===============================          -->
 <!--                                             -->
@@ -69,13 +69,13 @@ if you contacted me before making any changes to this software.
 <!--    ==== Autotrim Control    ======          -->
 <!--    ===============================          -->
 <!--                                             -->
-<!-- 1263 PID-TgtSpdErr       =>  SpdPitDeg      -->
-<!-- 1294 Flt-RoC-SpPtDg      =>  SpPitDgFltd    -->
-<!-- 1313 PID-SpPitDgFltd     =>  ElvSrv         -->
-<!-- 1349 PID-AltSpPt-VS      =>  ThrSrv         -->
-<!-- 1398 PID-GSSpPt-VSNFFltd =>  ThrSrv         -->
-<!-- 1437 PID-TgtIAS          =>  ThrSrv         -->
-<!-- 1471 Flt-RoC-ThrSrv      =>  4xThrs         -->
+<!--      PID-TgtSpdErr       =>  SpdPitDeg      -->
+<!--      Flt-RoC-SpPtDg      =>  SpPitDgFltd    -->
+<!--      PID-SpPitDgFltd     =>  ElvSrv         -->
+<!--      PID-AltSpPt-VS      =>  ThrSrv         -->
+<!--      PID-GSSpPt-VSNFFltd =>  ThrSrv         -->
+<!--      PID-TgtIAS          =>  ThrSrv         -->
+<!--      Flt-RoC-ThrSrv      =>  4xThrs         -->
 <!--                                             -->
 <!--    ===============================          -->
 
@@ -90,7 +90,7 @@ if you contacted me before making any changes to this software.
   <!-- Limit change rate from PB-20 Roll Knob  -->
   <filter>
 	<type>noise-spike</type>
-	<name>FltRoC-RolKnob=>TgtRolDeg~P1L2</name>
+	<name>Flt-RoC-RolKnob=>TgtRolDeg~L2</name>
 	<debug>false</debug>
 	<enable>
 		<equals>
@@ -104,7 +104,7 @@ if you contacted me before making any changes to this software.
 	<initialize-to>output</initialize-to>
 	<input>
     <condition>
-      <property>/systems/tune/pids-lat1-open</property>
+      <property>/systems/tune/pids-lat2-open</property>
     </condition>
     <expression>
       <product>
@@ -281,7 +281,7 @@ if you contacted me before making any changes to this software.
   <!-- and target heading. -->
   <pid-controller>
 	<!--name>Nav1 Hold Stage 1</name-->
-	<name>PID-Nv1HdgErr=>TgtRolDeg~P1L2</name>
+	<name>PID-Nv1HdgErr=>TgtRolDeg~L2</name>
 	<debug>false</debug>
 	<enable>
 		<prop>/autopilot/locks/heading</prop>
@@ -290,7 +290,7 @@ if you contacted me before making any changes to this software.
   <!-- polly  Inject input signal via kybd hotkey -->
   <input>
     <condition>
-      <property>/systems/tune/pids-lat1-open</property>
+      <property>/systems/tune/pids-lat2-open</property>
     </condition>
     <property>/systems/tune/poke-latr-mark</property>
   </input>
@@ -506,41 +506,38 @@ if you contacted me before making any changes to this software.
 	</config>
   </pi-simple-controller>
   
-  <!--
+  <!-- polly try Yaw Damper -->
 	<pid-controller>
 		<name>Heading Bug Hold (DG based) Stage 3 (Rudder)</name>
-		<name>PID-SkidBall=>RddrSrv</name>
-		<debug>false</debug>
+		<name>PID-YawDmpSkid=>RddrSrv</name>
+		<debug>true</debug>
 		<enable>
-		<condition>
-			<and>
-				<not><property>gear/gear[0]/wow</property></not>
-				<not><property>gear/gear[1]/wow</property></not>
-				<not><property>gear/gear[3]/wow</property></not>
-				<or>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>dg-heading-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>true-heading-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>nav1-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>wing-leveler</value>
-					</equals>
-				</or>
-			</and>
-		</condition>
+		  <condition>
+			  <and>
+				  <not><property>gear/gear[0]/wow</property></not>
+				  <not><property>gear/gear[1]/wow</property></not>
+				  <not><property>gear/gear[3]/wow</property></not>
+				  <equals>
+					  <property>/autopilot/internal/yaw-damper</property>
+					  <value>1</value>
+				  </equals>
+			  </and>
+		  </condition>
 		</enable>
 		<input>
 			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
 		</input>
+		<reference>
+      <condition>
+        <property>/systems/tune/pids-lat4-open</property>
+      </condition>
+      <expression>
+        <product>
+          <property>/systems/tune/poke-latr-mark</property>
+          <value>10.0</value>
+        </product>  
+	    </expression>
+		</reference>
 		<reference>
 			<value>0.0</value>
 		</reference>
@@ -548,17 +545,16 @@ if you contacted me before making any changes to this software.
 			<property>/autopilot/internal/rudder-servo</property>
 		</output>
 		<config>
-			<Kp>0.005</Kp>
+			<Kp>0.025</Kp>
 			<beta>1.0</beta>
 			<alpha>0.1</alpha>
 			<gamma>0.0</gamma>
-			<Ti>0.1</Ti>
+			<Ti>1.0</Ti>
 			<Td>0.001</Td>
 			<u_min>-0.2</u_min>
 			<u_max>0.2</u_max>
 		</config>
 	</pid-controller>
-  -->
 
   <!-- =============================================================== -->
   <!-- rudder servo driver.                                            -->
@@ -588,6 +584,10 @@ if you contacted me before making any changes to this software.
 						<property>/autopilot/locks/heading</property>
 						<value>nav1-hold</value>
 					</equals>
+				  <equals>
+					  <property>/autopilot/internal/yaw-damper</property>
+					  <value>1</value>
+				  </equals>
 				</or>
 			</condition>
 		</enable>
@@ -972,7 +972,13 @@ if you contacted me before making any changes to this software.
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
       </condition>
-      <property>/systems/tune/poke-vert-mark</property>
+    <expression>
+      <product>
+        <!--  4800 fpm 80 fps -->
+        <property>/systems/tune/poke-vert-mark</property>
+        <value>80.0</value>
+      </product>  
+	  </expression>
     </reference>
     <reference>
       <prop>/autopilot/settings/vertical-speed-fpm</prop>
@@ -1118,7 +1124,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<name>FltRocElvSrv=>ElvFCS</name>
+		<name>Fl-tRoc-ElvSrv=>ElvFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
