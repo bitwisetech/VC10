@@ -23,27 +23,110 @@ if you contacted me before making any changes to this software.
 <info (at) marc-kraus.de> April, 2017
 ########################################################################-->
  
-<!-- Generic Autopilot Configuration -->
-
+<!-- Autopilot Configuration -->
 <!-- Each component is evaluated in the order specified.  You can make up -->
 <!-- property names to pass the result of one component on to a subsequent -->
 <!-- component. -->
 
+<!--    ===============================          -->
+<!--    ==== A/P Lateral Modes   ======          -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--      Flt-RoC-RolKnob   =>  TgtRolDeg~L2     -->   
+<!--      Flt-HdgErr|180|   =>  HdgBugErrDeg     -->   
+<!--      PIS-DGHdgErr      =>  TgtRolUnf~L1     -->   
+<!--      PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
+<!--      Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
+<!--      PID-Nv1HdgErr     =>  TgtRolDeg~L2     -->   
+<!--      PID-TgtRolDeg     =>  AilrSrvo~L3      -->   
+<!--      Flt-RoC-AilSrv    =>  AilrFCS          -->   
+<!--      PIS-RollDeg       =>  RddrSrv~L4       -->   
+<!--      PID-YawDmpSkid    =>  RddrSrv          -->   
+<!--      Flt-RoC-RdrSrv    =>  RdrFCS           -->   
+<!--      PID-YDSkidBall    =>  RdrTrm~L5        -->   
+<!--                                             -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--    ===============================          -->
+<!--    ==== A/P Vertical Modes  ======          -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--      PID-TgtPit        =>  ElvSrv~V2        -->
+<!--      PID-TgtAoA        =>  ElvSrv~V2        -->
+<!--      PID-AltHldErr     =>  TgtFps~V1        -->
+<!--      PIS-AGLHld        =>  TgtFps~V1        -->  
+<!--      PID-TgtFps        =>  ElvSrv~V2        -->
+<!--      PID-GSRoCErr      =>  ElvSrv~V2        -->
+<!--      PID-VSHldFps      =>  ElvSrv~V2        -->
+<!--      PID-VSpdPit       =>  ThrSrv           -->
+<!--      Flt-RoC-ElvPosn   =>  ElvNasNoNo       -->
+<!--      Flt-Roc-ElvSrv    =>  ElvFCS           -->
+<!--      PID-ElvSrv        =>  ElVTrmFCS~V3     -->
+<!--                                             -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--    ===============================          -->
+<!--    ==== Autotrim Control    ======          -->
+<!--    ===============================          -->
+<!--                                             -->
+<!--      PID-TgtSpdErr       =>  SpdPitDeg      -->
+<!--      Flt-RoC-SpPtDg      =>  SpPitDgFltd    -->
+<!--      PID-SpPitDgFltd     =>  ElvSrv         -->
+<!--      PID-AltSpPt-VS      =>  ThrSrv         -->
+<!--      PID-GSSpPt-VSNFFltd =>  ThrSrv         -->
+<!--      PID-TgtIAS          =>  ThrSrv         -->
+<!--      Flt-RoC-ThrSrv      =>  4xThrs         -->
+<!--                                             -->
+<!--    ===============================          -->
+
 
 <PropertyList>
-
-  <!-- polly moved servo drivers to end of sections -->
 
   <!-- =============================================================== -->
   <!-- Roll Axis Modes                                                 -->
   <!-- =============================================================== -->
+  <!-- polly moved servo drivers to end of sections -->
+
+  <!-- Limit change rate from PB-20 Roll Knob  -->
+  <filter>
+	<type>noise-spike</type>
+	<name>Flt-RoC-RolKnob=>TgtRolDeg~L2</name>
+	<debug>false</debug>
+	<enable>
+		<equals>
+			<property>/autopilot/locks/heading</property>
+			<value>wing-leveler</value>
+		</equals>
+	</enable>
+	<max-rate-of-change>
+		<value>2.0</value>
+	</max-rate-of-change>
+	<initialize-to>output</initialize-to>
+	<input>
+    <condition>
+      <property>/systems/tune/pids-lat2-open</property>
+    </condition>
+    <expression>
+      <product>
+        <property>/systems/tune/poke-latr-mark</property>
+        <value>-10.0</value>
+      </product>  
+	  </expression>
+	</input>
+	<input>
+		<property>/autopilot/internal/wing-leveler-target-roll-deg</property>
+	</input>
+	<output>/autopilot/internal/target-roll-deg</output>
+  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <output>
+    <property>/systems/tune/pids-lat2-out</property>
+	</output>
+  </filter>
 
   <!-- Heading Bug Hold.  2 stage cascade controller. -->
-
   <filter>
 	<type>gain</type>
-	<!--name>heading bug error computer/normalizer</name-->
-	<name>filt-HdgBugErr180</name>
+	<name>Flt-HdgErr|180|=>HdgBugErrDeg</name>
 	<debug>false</debug>
 	<input>
 		<property>/autopilot/settings/heading-bug-deg</property>
@@ -64,7 +147,7 @@ if you contacted me before making any changes to this software.
   <!-- and heading bug. -->
   <pi-simple-controller>
 	<!--name>Heading Bug Hold (DG based) Stage 1</name-->
-	<name>DGHdgHld=>TgtRolUnf~L1Err</name>
+	<name>PIS-DGHdgErr=>TgtRolUnf~L1</name>
 	<debug>false</debug>
 	<enable>
 		<condition>
@@ -95,7 +178,7 @@ if you contacted me before making any changes to this software.
 	</output>
   <!--polly: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat1-err</property>
+    <property>/systems/tune/pids-lat1-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
@@ -112,7 +195,7 @@ if you contacted me before making any changes to this software.
   <!-- tbd polly replaced with =- 180 filter and PID in 707    -->
   <pi-simple-controller>
 	<!--name>True Heading Hold (DG based) Stage 1</name-->
-	<name>TruHdgHld=>TgtRolUnf~L1Err</name>
+	<name>PIS-TruHdgErr=>TgtRolUnf~L1</name>
 	<debug>false</debug>
 	<enable>
 		<condition>
@@ -143,7 +226,7 @@ if you contacted me before making any changes to this software.
 	</output>
   <!--polly: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat1-err</property>
+    <property>/systems/tune/pids-lat1-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
@@ -154,9 +237,7 @@ if you contacted me before making any changes to this software.
 
   <filter>
 	<type>noise-spike</type>
-  <!-- tbd polly 707: added nav1 and max min 6.0 deg Sec    -->
-	<!--name>filter - true-heading</name-->
-	<name>FltRoC-TgtRolUnf</name>
+	<name>FltRoc-TgtRolUnf=>TgtRolDeg~L2</name>
 	<debug>false</debug>
 	<feedback-if-disabled>true</feedback-if-disabled>
 	<enable>
@@ -173,32 +254,25 @@ if you contacted me before making any changes to this software.
 			</or>
 		</condition>
 	</enable>
+	<input>
+    <condition>
+      <property>/systems/tune/pids-lat2-open</property>
+    </condition>
+    <expression>
+      <product>
+        <property>/systems/tune/poke-latr-mark</property>
+        <value>-10.0</value>
+      </product>  
+	  </expression>
+	</input>
 	<input>/autopilot/internal/target-roll-deg-unfiltered</input>
 	<output>/autopilot/internal/target-roll-deg</output>
+  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <output>
+    <property>/systems/tune/pids-lat2-out</property>
+	</output>
 	<max-rate-of-change>3.0</max-rate-of-change>
 	<!-- polly max-rate-of-change>6.0</max-rate-of-change-->
-  </filter>
-
-  <!-- noise-spike filter to limit change of 'wing-leveler-target-roll-deg' -->
-  <filter>
-	<type>noise-spike</type>
-	<!--name>wing-leveler filter</name-->
-	<name>FltRoC-WngLvlTgtRol</name>
-	<debug>false</debug>
-	<enable>
-		<equals>
-			<property>/autopilot/locks/heading</property>
-			<value>wing-leveler</value>
-		</equals>
-	</enable>
-	<max-rate-of-change>
-		<value>2.0</value>
-	</max-rate-of-change>
-	<initialize-to>output</initialize-to>
-	<input>
-		<property>/autopilot/internal/wing-leveler-target-roll-deg</property>
-	</input>
-	<output>/autopilot/internal/wing-leveler-target-roll-deg-filtered</output>
   </filter>
 
   <!-- Nav1 hold.  2 stage cascade controller. -->
@@ -207,7 +281,7 @@ if you contacted me before making any changes to this software.
   <!-- and target heading. -->
   <pid-controller>
 	<!--name>Nav1 Hold Stage 1</name-->
-	<name>Nav1HdgErr=>TgtRolDeg~L1Err</name>
+	<name>PID-Nv1HdgErr=>TgtRolDeg~L2</name>
 	<debug>false</debug>
 	<enable>
 		<prop>/autopilot/locks/heading</prop>
@@ -216,7 +290,7 @@ if you contacted me before making any changes to this software.
   <!-- polly  Inject input signal via kybd hotkey -->
   <input>
     <condition>
-      <property>/systems/tune/pids-lat1-open</property>
+      <property>/systems/tune/pids-lat2-open</property>
     </condition>
     <property>/systems/tune/poke-latr-mark</property>
   </input>
@@ -231,7 +305,7 @@ if you contacted me before making any changes to this software.
 	</output>
   <!--polly: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat1-err</property>
+    <property>/systems/tune/pids-lat2-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
@@ -249,7 +323,7 @@ if you contacted me before making any changes to this software.
   <!-- Wing leveler/Heading-Bug/True/Nav1 - Stage #2 drives the ailerons(-servo) to achieve the desired roll deg. -->
   <pid-controller>
 	<!--name>Heading Hold - Stage 2 - all Heading modes</name-->
-	<name>TgtRolDeg=>AilrSrvo~L2Err</name>
+	<name>PID-TgtRolDeg=>AilrSrvo~L3</name>
 	<debug>false</debug>
 	<enable>
 		<condition>
@@ -279,7 +353,7 @@ if you contacted me before making any changes to this software.
   <!-- polly  Inject input signal via kybd hotkey -->
   <reference>
     <condition>
-      <property>/systems/tune/pids-lat2-open</property>
+      <property>/systems/tune/pids-lat3-open</property>
     </condition>
     <expression>
       <product>
@@ -289,8 +363,13 @@ if you contacted me before making any changes to this software.
     </expression>
   </reference>
 	<reference>
+    <!-- polly WL filter output renamed to tgt-rol-deg and included  -->
 		<condition>
 			<or>
+			  <equals>
+				  <property>/autopilot/locks/heading</property>
+				  <value>wing-leveler</value>
+			  </equals>
 				<equals>
 					<property>/autopilot/locks/heading</property>
 					<value>dg-heading-hold</value>
@@ -299,69 +378,29 @@ if you contacted me before making any changes to this software.
 					<property>/autopilot/locks/heading</property>
 					<value>true-heading-hold</value>
 				</equals>
+				<equals>
+					<property>/autopilot/locks/heading</property>
+					<value>nav1-hold</value>
+				</equals>
 			</or>
 		</condition>
 		<property>/autopilot/internal/target-roll-deg</property>
 	</reference>
-	<reference>
-		<condition>
-			<equals>
-				<property>/autopilot/locks/heading</property>
-				<value>wing-leveler</value>
-			</equals>
-		</condition>
-		<property>/autopilot/internal/wing-leveler-target-roll-deg-filtered</property>
-	</reference>
-	<reference>
 		<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
-		<condition>
-			<and>
-				<not>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>wing-leveler</value>
-					</equals>
-				</not>
-				<equals>
-					<property>/autopilot/internal/VOR-near-by</property>
-					<value>1</value>
-				</equals>
-			</and>
-		</condition>
-    <!-- polly Issue: nans here if AP then APPR buttons hit -->
-		<property>/autopilot/internal/target-roll-deg-for-VOR-near-by</property>
-	</reference>
-	<reference>
-		<condition>
-			<and>
-				<not>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>wing-leveler</value>
-					</equals>
-				</not>
-				<equals>
-					<property>/autopilot/internal/VOR-near-by</property>
-					<value>0</value>
-				</equals>
-			</and>
-		</condition>
-		<property>/autopilot/internal/target-roll-deg</property>
-	</reference>
+    <!--   polly: issue nasal only returns +ve tgtRoldeg near VOR ?? Section deleted -->  
 	<output>
 		<property>/autopilot/internal/aileron-servo</property>
 	</output>
 	<!--polly: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat2-err</property>
+    <property>/systems/tune/pids-lat3-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-hold</Kp>
 		<beta>1.0</beta>
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
-		<!--Ti>/autopilot/internal/target-ti-for-heading-hold</Ti-->
-		<Ti>10.0</Ti>
+		<Ti>/autopilot/internal/target-ti-for-heading-hold</Ti>
 		<Td>0.05</Td>
 		<u_min>-1.0</u_min>
 		<u_max>1.0</u_max>
@@ -374,8 +413,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<!--name>SERVO-DRIVER:aileron</name-->
-		<name>FltRoC-AilSrv</name>
+		<name>FltRoC-AilSrv=>AilrFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -414,7 +452,7 @@ if you contacted me before making any changes to this software.
   <!-- Stage drives the rudder in order to the actual roll. -->
   <pi-simple-controller>
 	<!--name>Heading Bug Hold (DG based) Stage 3</name-->
-	<name>RollDeg=>RdrSrv~L2Out</name>
+	<name>PIS-RollDeg=>RddrSrv~L4</name>
 	<debug>false</debug>
 	<enable>
 		<condition>
@@ -446,7 +484,7 @@ if you contacted me before making any changes to this software.
   <!-- polly  Inject input signal via kybd hotkey -->
   <input>
     <condition>
-      <property>/systems/tune/pids-lat3-open</property>
+      <property>/systems/tune/pids-lat4-open</property>
     </condition>
     <property>/systems/tune/poke-latr-mark</property>
   </input>
@@ -459,7 +497,7 @@ if you contacted me before making any changes to this software.
 	</output>
 	<!--polly: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat2-out</property>
+    <property>/systems/tune/pids-lat4-out</property>
 	</output>
 	<config>
 		<Kp>-0.004</Kp>
@@ -468,40 +506,38 @@ if you contacted me before making any changes to this software.
 	</config>
   </pi-simple-controller>
   
-  <!--
+  <!-- polly try Yaw Damper -->
 	<pid-controller>
 		<name>Heading Bug Hold (DG based) Stage 3 (Rudder)</name>
-		<debug>false</debug>
+		<name>PID-YawDmpSkid=>RddrSrv</name>
+		<debug>true</debug>
 		<enable>
-		<condition>
-			<and>
-				<not><property>gear/gear[0]/wow</property></not>
-				<not><property>gear/gear[1]/wow</property></not>
-				<not><property>gear/gear[3]/wow</property></not>
-				<or>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>dg-heading-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>true-heading-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>nav1-hold</value>
-					</equals>
-					<equals>
-						<property>/autopilot/locks/heading</property>
-						<value>wing-leveler</value>
-					</equals>
-				</or>
-			</and>
-		</condition>
+		  <condition>
+			  <and>
+				  <not><property>gear/gear[0]/wow</property></not>
+				  <not><property>gear/gear[1]/wow</property></not>
+				  <not><property>gear/gear[3]/wow</property></not>
+				  <equals>
+					  <property>/autopilot/internal/yaw-damper</property>
+					  <value>1</value>
+				  </equals>
+			  </and>
+		  </condition>
 		</enable>
 		<input>
 			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
 		</input>
+		<reference>
+      <condition>
+        <property>/systems/tune/pids-lat4-open</property>
+      </condition>
+      <expression>
+        <product>
+          <property>/systems/tune/poke-latr-mark</property>
+          <value>10.0</value>
+        </product>  
+	    </expression>
+		</reference>
 		<reference>
 			<value>0.0</value>
 		</reference>
@@ -509,48 +545,11 @@ if you contacted me before making any changes to this software.
 			<property>/autopilot/internal/rudder-servo</property>
 		</output>
 		<config>
-			<Kp>0.005</Kp>
+			<Kp>0.025</Kp>
 			<beta>1.0</beta>
 			<alpha>0.1</alpha>
 			<gamma>0.0</gamma>
-			<Ti>0.1</Ti>
-			<Td>0.001</Td>
-			<u_min>-0.2</u_min>
-			<u_max>0.2</u_max>
-		</config>
-	</pid-controller>
-  -->
-
-	<!-- Yaw Damper -->
-	<pid-controller>
-		<name>Yaw Damper (it's a guess: fast working controller on rudder-trim)</name>
-		<name>YawDmpSkid=>RdrTrm~L3Out</name>
-		<debug>false</debug>
-		<enable>
-			<condition>
-				<property>/autopilot/internal/yaw-damper</property>
-				<value>1</value>
-			</condition>
-		</enable>
-		<input>
-			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
-		</input>
-		<reference>
-			<value>0.0</value>
-		</reference>
-		<output>
-			<property>/controls/flight/rudder-trim</property>
-		</output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
-    <output>
-      <property>/systems/tune/pids-lat3-out</property>
-	  </output>
-		<config>
-			<Kp>0.005</Kp>
-			<beta>1.0</beta>
-			<alpha>0.1</alpha>
-			<gamma>0.0</gamma>
-			<Ti>0.1</Ti>
+			<Ti>1.0</Ti>
 			<Td>0.001</Td>
 			<u_min>-0.2</u_min>
 			<u_max>0.2</u_max>
@@ -563,8 +562,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<!--name>SERVO-DRIVER:rudder heading-bug</name-->
-		<name>RdrSrvDrv</name>
+		<name>Flt-RoCRdrSrv=>RdrFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -586,6 +584,10 @@ if you contacted me before making any changes to this software.
 						<property>/autopilot/locks/heading</property>
 						<value>nav1-hold</value>
 					</equals>
+				  <equals>
+					  <property>/autopilot/internal/yaw-damper</property>
+					  <value>1</value>
+				  </equals>
 				</or>
 			</condition>
 		</enable>
@@ -595,13 +597,49 @@ if you contacted me before making any changes to this software.
 		<max-rate-of-change>0.08</max-rate-of-change>
 	</filter>
 
+	<!-- Yaw Damper -->
+	<pid-controller>
+		<name>Yaw Damper (it's a guess: fast working controller on rudder-trim)</name>
+		<name>PID-YDSkidBall=>RdrTrm~L5</name>
+		<debug>false</debug>
+		<enable>
+			<condition>
+				<property>/autopilot/internal/yaw-damper</property>
+				<value>1</value>
+			</condition>
+		</enable>
+		<input>
+			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
+		</input>
+		<reference>
+			<value>0.0</value>
+		</reference>
+		<output>
+			<property>/controls/flight/rudder-trim</property>
+		</output>
+	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+    <output>
+      <property>/systems/tune/pids-lat5-out</property>
+	  </output>
+		<config>
+			<Kp>0.005</Kp>
+			<beta>1.0</beta>
+			<alpha>0.1</alpha>
+			<gamma>0.0</gamma>
+			<Ti>0.1</Ti>
+			<Td>0.001</Td>
+			<u_min>-0.2</u_min>
+			<u_max>0.2</u_max>
+		</config>
+	</pid-controller>
+
  <!-- =============================================================== -->
  <!-- Pitch Axis Modes                                                -->
  <!-- =============================================================== -->
 
  <!-- Simple pitch hold --> 
  <pid-controller>
-    <name>PIT Tgt|HLD=>ElvSrv~V2Err</name>
+    <name>PID-TgtPit=>ElvSrv~V2Err</name>
     <debug>false</debug>
     <enable>
       <prop>/autopilot/locks/altitude</prop>
@@ -631,7 +669,7 @@ if you contacted me before making any changes to this software.
     </output>
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
-		  <property>/systems/tune/pids-vrt2-err</property>
+		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
     <config>
       <!--Kp>/autopilot/internal/target-kp-for-pitch-hold</Kp-->
@@ -649,7 +687,7 @@ if you contacted me before making any changes to this software.
 
  <!-- Simple angle of attack hold --> 
  <pid-controller>
-    <name>TgtAoA=>ElvSrv~V2Err</name>
+    <name>PID-TgtAoA=>ElvSrv~V2</name>
     <debug>false</debug>
     <enable>
       <prop>/autopilot/locks/altitude</prop>
@@ -679,7 +717,7 @@ if you contacted me before making any changes to this software.
     </output>
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
-		  <property>/systems/tune/pids-vrt2-err</property>
+		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
     <config>
       <Kp>-0.05</Kp>      <!-- proportional gain -->
@@ -701,7 +739,7 @@ if you contacted me before making any changes to this software.
   <!-- polly change to pid: error proportional -->
   <pid-controller>
     <!--name>Altitude Hold (Altimeter based) Stage 1</name-->
-    <name>AltHldErr=>TgtFps~V1Err</name>
+    <name>PID-AltHldErr=>TgtFps~V1</name>
     <debug>false</debug>
     <enable>
       <prop>/autopilot/locks/altitude</prop>
@@ -732,14 +770,14 @@ if you contacted me before making any changes to this software.
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
 	  <!--     3000fpm: 50fps   -->
     <output>
-		  <property>/systems/tune/pids-vrt1-err</property>
+		  <property>/systems/tune/pids-vrt1-out</property>
 	  </output>
     <config>
-      <Kp>0.200</Kp>
-      <Ti>4.000</Ti>
-      <Td>0.011</Td>
+      <Kp>0.01</Kp>
+      <Ti>2.000</Ti>
+      <Td>0.001</Td>
       <alpha>0.100</alpha>
-      <beta>1.000</beta>
+      <beta>00.010</beta>
       <gamma>1.000</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
       <u_max>50.0</u_max>   <!-- maximum output clamp -->
@@ -752,7 +790,7 @@ if you contacted me before making any changes to this software.
   <!-- and target agl. -->
   <pi-simple-controller>
     <!--name>AGL Hold (Altimeter based) Stage 1</name-->
-    <name>AGLHld=>TgtFps~V1Err</name>
+    <name>PIS-AGLHld=>TgtFps~V1Err</name>
     <debug>false</debug>
     <enable>
       <prop>/autopilot/locks/altitude</prop>
@@ -761,6 +799,18 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/position/altitude-agl-ft</prop>
     </input>
+    <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
+    <reference>
+      <condition>
+        <property>/systems/tune/pids-vrt1-open</property>
+      </condition>
+      <expression>
+       <product>      
+         <property>/systems/tune/poke-vert-mark</property>
+         <value>100</value>
+       </product>      
+      </expression>
+    </reference>
     <reference>
       <prop>/autopilot/settings/target-agl-ft</prop>
     </reference>
@@ -770,7 +820,7 @@ if you contacted me before making any changes to this software.
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
 	  <!--     3000fpm: 50fps   -->
     <output>
-		  <property>/systems/tune/pids-vrt1-err</property>
+		  <property>/systems/tune/pids-vrt1-out</property>
 	  </output>
     <config>
       <Kp>0.3</Kp>          <!-- proportional gain -->
@@ -783,7 +833,7 @@ if you contacted me before making any changes to this software.
   <!-- Altitude/AGL Stage #2 drives the elevator-trim(-servo) to achieve the desired climb rate. -->
   <pid-controller>
     <!--name>Altitude/AGL Hold (Altimeter based) Stage 2</name-->
-    <name>ALT+AGLTgtRoC~V2Opn=>ElvSrv~V1Out</name>
+    <name>PID-TgtFps=>ElvSrv~V2Out</name>
     <debug>false</debug>
     <enable>
 	    <condition>
@@ -814,27 +864,21 @@ if you contacted me before making any changes to this software.
         <property>/systems/tune/pids-vrt2-open</property>
         <value>1</value>
       </condition>
-    <expression>
-      <product>
-        <!-- Max poke 1.0 * 80  4800fps -->
-        <property>/systems/tune/poke-vert-mark</property>
-        <value>80.0</value>
-      </product>  
-	  </expression>
+      <property>/systems/tune/poke-vert-mark</property>
     </reference>
     <reference>
-        <property>/autopilot/internal/target-climb-rate-fps</property>
+      <property>/autopilot/internal/target-climb-rate-fps</property>
     </reference>
     <output>
       <property>/autopilot/internal/elevator-servo</property>
     </output>
     <!--polly: Copy signal to xbar: Stanza must not precede real output -->
     <output>
-      <property>/systems/tune/pids-vrt1-out</property>
+      <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
     <config>
       <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
-      <Kp>-0.010</Kp>
+      <Kp>-0.0010</Kp>
       <beta>1.0</beta>    <!-- input value weighing factor -->
       <alpha>0.1</alpha>  <!-- low pass filter weighing factor -->
       <gamma>0.0</gamma>  <!-- input value weighing factor for -->
@@ -851,7 +895,7 @@ if you contacted me before making any changes to this software.
   <!-- Stage #2 drives the elevator-trim(-servo) to achieve the desired climb rate. -->
   <pid-controller>
     <name>Glideslop Hold</name>
-    <name>GSHldTgtRoC~V2Opn=>ElvSrv~V1Out</name>
+    <name>PID-GSRoCErr=>ElvSrv~V2Out</name>
     <debug>false</debug>
     <enable>
 	    <condition>
@@ -886,7 +930,7 @@ if you contacted me before making any changes to this software.
     </output>
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
-		  <property>/systems/tune/pids-vrt1-out</property>
+		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
     <config>
       <Kp>/autopilot/internal/target-kp-for-gs-hold</Kp>     <!-- proportional gain -->
@@ -903,7 +947,8 @@ if you contacted me before making any changes to this software.
 
   <!-- vertical speed hold -->
   <pid-controller>
-    <name>Vertical Speed Hold</name>
+    <!--name>Vertical Speed Hold</name-->
+    <name>PID-VSHldFps=>ElvSrv</name>
     <debug>false</debug>
     <enable>
 	    <condition>
@@ -925,9 +970,15 @@ if you contacted me before making any changes to this software.
     <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
       <condition>
-        <property>/systems/tune/pids-vrt1-open</property>
+        <property>/systems/tune/pids-vrt2-open</property>
       </condition>
-      <property>/systems/tune/poke-vert-mark</property>
+    <expression>
+      <product>
+        <!--  4800 fpm 80 fps -->
+        <property>/systems/tune/poke-vert-mark</property>
+        <value>80.0</value>
+      </product>  
+	  </expression>
     </reference>
     <reference>
       <prop>/autopilot/settings/vertical-speed-fpm</prop>
@@ -936,6 +987,10 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/elevator-servo</prop>
     </output>
+	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <output>
+		  <property>/systems/tune/pids-vrt2-out</property>
+	  </output>
     <config>
       <Kp>/autopilot/internal/target-kp-for-alt-hold</Kp>      <!-- proportional gain -->
       <beta>1.0</beta>    <!-- input value weighing factor -->
@@ -952,7 +1007,7 @@ if you contacted me before making any changes to this software.
  <!-- Fallback for 'speed-with-pitch' - control vspeed with throttle --> 
  <pid-controller>
     <!--name>VSpeed-hold with throttle</name-->
-    <name>VSpdHld-Thrtls</name>
+    <name>PID-VSpdPit=>ThrSrv</name>
     <debug>false</debug>
     <enable>
 	<condition>
@@ -996,8 +1051,7 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 	<filter>
 		<type>gain</type>
-		<!--name>elevator-adjust (altitude/vspeed)</name-->
-		<name>ElvUpFlt</name>
+		<name>Flt-UpFlt-ElvPosn=>ElvNasNoNo</name>
 		<debug>false</debug>
 		<enable>
 			<condition>
@@ -1070,8 +1124,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<!--name>SERVO-DRIVER:elevator-trim (altitude/vspeed)</name-->
-		<name>ElvSrvDrvAltVs</name>
+		<name>Fl-tRoc-ElvSrv=>ElvFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -1128,7 +1181,7 @@ if you contacted me before making any changes to this software.
 
   <pid-controller>
 		<!--name>SERVO-DRIVER:elevator-trim (altitude/vspeed)</name-->
-		<name>Trm-Elv-Trk-Alt-VS</name>
+		<name>PID-ElvSrv=>ElVTrmFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -1186,6 +1239,10 @@ if you contacted me before making any changes to this software.
     </reference>
 		<output>/controls/flight/elevator-trim</output>
 		<output>/controls/flight/elevator-trim-fcs</output>
+	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <output>
+		  <property>/systems/tune/pids-vrt3-out</property>
+	  </output>
     <config>
       <Kp>-0.04</Kp>        <!-- proportional gain -->
       <beta>1.0</beta>    <!-- input value weighing factor -->
@@ -1210,22 +1267,23 @@ if you contacted me before making any changes to this software.
 
 	<!-- Step 1 - determine appropriate pitch (needed to clamp pitch within certain range) -->
 	<pid-controller>
-	        <name>Speed with Pitch</name>
-	        <debug>false</debug>
-	        <enable>
+	  <!--name>Speed with Pitch</name-->
+	  <name>PID-TgtSpdErr=>SpdPitDeg</name>
+	  <debug>false</debug>
+	  <enable>
 			<condition>
 				<equals>
 					<property>/autopilot/locks/speed</property>
 					<value>speed-with-pitch-trim</value>
 				</equals>
 			</condition>
-	        </enable>
-	        <input>
+	  </enable>
+	  <input>
 			<property>/instrumentation/airspeed-indicator/indicated-speed-kt</property>
-	        </input>
-	        <reference>
+	  </input>
+	  <reference>
 			<property>/autopilot/settings/target-speed-kt</property>
-	        </reference>
+    </reference>
 		<output>
 			<property>/autopilot/internal/speed-with-pitch-pitch-deg</property>
 			<scale>0.3</scale>
@@ -1240,9 +1298,9 @@ if you contacted me before making any changes to this software.
 	</pid-controller>
 
 	<filter>
-		<name>FltSpdPit</name>
-		<debug>false</debug>
 		<type>noise-spike</type>
+		<name>Flt-RoC-SpPtDg=>SpPitDgFltd</name>
+		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 	        <enable>
 			<condition>
@@ -1259,7 +1317,8 @@ if you contacted me before making any changes to this software.
 
 	<!-- Step 2 - use pitch-hold-controller to operate the elevator-trim -->
 	<pid-controller>
-		<name>Speed with pitch - Pitch hold</name>
+		<!--name>Speed with pitch - Pitch hold</name-->
+		<name>PID-SpPitDegFltd=>ElvSrv</name>
 		<debug>false</debug>
 		<enable>
 			<condition>
@@ -1295,7 +1354,7 @@ if you contacted me before making any changes to this software.
  <!-- Fallback if Alt|AGLHld with SpdWithPitch - control vspeed with throttle --> 
  <pid-controller>
     <!--name>Altitude-hold with throttle</name-->
-    <name>SpdPit AltAgl RoC=>ThrSrv</name>
+    <name>PID-AltSpPt-VS=>ThrSrv</name>
     <debug>false</debug>
     <enable>
 	  <condition>
@@ -1341,7 +1400,8 @@ if you contacted me before making any changes to this software.
 
  <!-- Fallback if GSHld with SpdWithPitch - control vspeed with throttle --> 
  <pid-controller>
-    <name>GS-hold with throttle</name>
+    <!--name>GS-hold with throttle</name-->
+    <name>PID-GSSpPt-VSNFFltd=>ThrSrv</name>
     <debug>false</debug>
     <enable>
 	<condition>
@@ -1381,7 +1441,8 @@ if you contacted me before making any changes to this software.
 
  <!-- Auto throttle --> 
  <pid-controller>
-    <name>Auto Throttle</name>
+    <!--name>Auto Throttle</name-->
+    <name>PID-TgtIAS=>ThrSrv</name>
     <debug>false</debug>
     <enable>
       <prop>/autopilot/locks/speed</prop>
@@ -1416,7 +1477,7 @@ if you contacted me before making any changes to this software.
 	<filter>
 		<type>noise-spike</type>
 		<!--name>SERVO-DRIVER:throttle</name-->
-		<name>ThrtSrvDrv</name>
+		<name>Flt-RoC-ThrSrv=>4xThrs</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
