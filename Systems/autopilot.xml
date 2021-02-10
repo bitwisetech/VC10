@@ -510,7 +510,7 @@ if you contacted me before making any changes to this software.
 	<pid-controller>
 		<name>Heading Bug Hold (DG based) Stage 3 (Rudder)</name>
 		<name>PID-YawDmpSkid=>RddrSrv</name>
-		<debug>true</debug>
+		<debug>false</debug>
 		<enable>
 		  <condition>
 			  <and>
