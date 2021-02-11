@@ -34,7 +34,7 @@ if you contacted me before making any changes to this software.
 <!--                                             -->
 <!--      Flt-RoC-RolKnob   =>  TgtRolDeg~L2     -->   
 <!--      Flt-HdgErr|180|   =>  HdgBugErrDeg     -->   
-<!--      PIS-DGHdgErr      =>  TgtRolUnf~L1     -->   
+<!--      PID-DGHdgErr      =>  TgtRolUnf~L1     -->   
 <!--      PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
 <!--      Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
 <!--      PID-Nv1HdgErr     =>  TgtRolDeg~L2     -->   
@@ -145,9 +145,9 @@ if you contacted me before making any changes to this software.
 
   <!-- Stage #1 sets target roll based on diff between current heading -->
   <!-- and heading bug. -->
-  <pi-simple-controller>
+  <pid-controller>
 	<!--name>Heading Bug Hold (DG based) Stage 1</name-->
-	<name>PIS-DGHdgErr=>TgtRolUnf~L1</name>
+	<name>PID-DGHdgErr=>TgtRolUnf~L1</name>
 	<debug>false</debug>
 	<enable>
 		<condition>
@@ -181,12 +181,19 @@ if you contacted me before making any changes to this software.
     <property>/systems/tune/pids-lat1-out</property>
 	</output>
 	<config>
-		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
-		<!--Kp>-2.6</Kp-->
+		<!--Kp>/autopilot/internal/target-kp-for-heading-deg</Kp-->
+		<Kp>-1.2</Kp>
+		<beta>1.0</beta>
+		<alpha>0.1</alpha>
+		<gamma>0.0</gamma>
+		<Ti>12.0</Ti>
+		<Td>0.001</Td>
+		<!--u_min>-20.0</u_min-->
+		<!--u_max>20.0</u_max-->
 		<u_min>/autopilot/internal/heading-min-roll</u_min>
 		<u_max>/autopilot/internal/heading-max-roll</u_max>
 	</config>
-  </pi-simple-controller>
+</pid-controller>
 
   <!-- True Heading hold.  2 stage cascade controller. -->
 
@@ -548,8 +555,8 @@ if you contacted me before making any changes to this software.
 			<Kp>0.025</Kp>
 			<beta>1.0</beta>
 			<alpha>0.1</alpha>
-			<gamma>0.0</gamma>
-			<Ti>1.0</Ti>
+			<gamma>1.0</gamma>
+			<Ti>8.0</Ti>
 			<Td>0.001</Td>
 			<u_min>-0.2</u_min>
 			<u_max>0.2</u_max>
@@ -755,10 +762,10 @@ if you contacted me before making any changes to this software.
         <property>/systems/tune/pids-vrt1-open</property>
       </condition>
       <expression>
-       <product>      
-         <property>/systems/tune/poke-vert-mark</property>
-         <value>100</value>
-       </product>      
+        <product>      
+           <property>/systems/tune/poke-vert-mark</property>
+           <value>100</value>
+        </product>      
       </expression>
     </reference>
     <reference>
@@ -768,16 +775,16 @@ if you contacted me before making any changes to this software.
       <prop>/autopilot/internal/target-climb-rate-fps</prop>
     </output>
 	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
-	  <!--     3000fpm: 50fps   -->
     <output>
 		  <property>/systems/tune/pids-vrt1-out</property>
 	  </output>
     <config>
-      <Kp>0.01</Kp>
-      <Ti>2.000</Ti>
-      <Td>0.001</Td>
+      <!-- 50Fps-3000fpm Max demand for 1000ft error: gain 50 / 1000  -->
+      <Kp>0.050</Kp>
+      <Ti>24.00</Ti>
+      <Td>0.0000001</Td>
       <alpha>0.100</alpha>
-      <beta>00.010</beta>
+      <beta>1.0</beta>
       <gamma>1.000</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
       <u_max>50.0</u_max>   <!-- maximum output clamp -->
@@ -864,7 +871,13 @@ if you contacted me before making any changes to this software.
         <property>/systems/tune/pids-vrt2-open</property>
         <value>1</value>
       </condition>
-      <property>/systems/tune/poke-vert-mark</property>
+      <expression>
+        <product>
+          <!--  4800 fpm 80 fps -->
+          <property>/systems/tune/poke-vert-mark</property>
+          <value>80.0</value>
+        </product>  
+	    </expression>
     </reference>
     <reference>
       <property>/autopilot/internal/target-climb-rate-fps</property>
@@ -878,15 +891,14 @@ if you contacted me before making any changes to this software.
 	  </output>
     <config>
       <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
-      <Kp>-0.0010</Kp>
-      <beta>1.0</beta>    <!-- input value weighing factor -->
-      <alpha>0.1</alpha>  <!-- low pass filter weighing factor -->
-      <gamma>0.0</gamma>  <!-- input value weighing factor for -->
-                          <!-- unfiltered derivative error -->
-      <Ti>8.0</Ti>       <!-- integrator time -->
-      <Td>0.00001</Td>    <!-- derivator time -->
-      <u_min>-1.0</u_min> <!-- minimum output clamp -->
-      <u_max>1.0</u_max>  <!-- maximum output clamp -->
+      <Kp>-0.002</Kp>
+      <beta>2.0</beta>
+      <alpha>0.1</alpha>
+      <gamma>1.0</gamma>
+      <Ti>20.0</Ti>
+      <Td>0.00251</Td>
+      <u_min>-1.0</u_min>
+      <u_max>1.0</u_max>
     </config>
   </pid-controller>
 
@@ -1172,7 +1184,9 @@ if you contacted me before making any changes to this software.
 		</input>
 		<output>/controls/flight/elevator</output>
 		<output>/controls/flight/elevator-fcs</output>
-    <max-rate-of-change>0.2</max-rate-of-change>
+    <!--max-rate-of-change>0.2</max-rate-of-change-->
+    <!--  polly disable    -->
+    <max-rate-of-change>99990.2</max-rate-of-change>
 	</filter>
 
   <!-- =============================================================== -->
