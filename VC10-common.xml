@@ -59,6 +59,9 @@ if you contacted me before making any changes to this software.
         <path>Aircraft/VC10/Systems/autopilot.xml</path>
     </autopilot>
     <autopilot>
+        <path>Aircraft/VC10/Systems/diff-filt.xml</path>
+    </autopilot>
+    <autopilot>
         <path>Aircraft/VC10/Systems/ap-xbar.xml</path>
     </autopilot>
 	</systems>

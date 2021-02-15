@@ -3,6 +3,7 @@
 Lake of Constance Hangar
 Vickers VC10 for Flightgear
 Copyright (C) 2013 M.Kraus
+Modifications with kind permission from original author
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,6 +38,7 @@ if you contacted me before making any changes to this software.
 <!--      PID-DGHdgErr      =>  TgtRolUnf~L1     -->   
 <!--      PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
 <!--      Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
+<!--      FLT-tgtAutoHdg    =>  mod180           -->
 <!--      PID-Nv1HdgErr     =>  TgtRolDeg~L2     -->   
 <!--      PID-TgtRolDeg     =>  AilrSrvo~L3      -->   
 <!--      Flt-RoC-AilSrv    =>  AilrFCS          -->   
@@ -123,7 +125,7 @@ if you contacted me before making any changes to this software.
 	</output>
   </filter>
 
-  <!-- Heading Bug Hold.  2 stage cascade controller. -->
+  <!--  Normalise Hdg Bug Error to +- 180 Deg  -->
   <filter>
 	<type>gain</type>
 	<name>Flt-HdgErr|180|=>HdgBugErrDeg</name>
@@ -143,8 +145,22 @@ if you contacted me before making any changes to this software.
 	<gain>1.0</gain>
   </filter>
 
-  <!-- Stage #1 sets target roll based on diff between current heading -->
-  <!-- and heading bug. -->
+  <!-- Lookahead for Hdg Bug Error    -->
+  <predict-simple>
+  <debug>false</debug>
+  <name>LAH-HdgErr-deg</name>
+  <seconds>4.0</seconds>
+  <input>
+    <prop>/autopilot/internal/heading-bug-error-deg</prop>
+  </input>
+  <output>
+    <property>/autopilot/internal/aheading-bug-error-deg</property>
+  </output>
+  <filter-gain>0.1</filter-gain>
+  </predict-simple>
+  
+  <!-- Heading Bug Hold.  2 stage cascade controller. -->
+  <!-- Stage #1 sets target roll based on Heading Bug E  -->
   <pid-controller>
 	<!--name>Heading Bug Hold (DG based) Stage 1</name-->
 	<name>PID-DGHdgErr=>TgtRolUnf~L1</name>
@@ -167,8 +183,9 @@ if you contacted me before making any changes to this software.
     </condition>
     <expression>
       <product>
+        <!--  Poke 1.0 for 90deg turn -->
         <property>/systems/tune/poke-latr-mark</property>
-        <value>-10.0</value>
+        <value>-90.0</value>
       </product>  
 	  </expression>
   </reference>
@@ -181,17 +198,19 @@ if you contacted me before making any changes to this software.
     <property>/systems/tune/pids-lat1-out</property>
 	</output>
 	<config>
+    <!-- docn RollRate 15 deg/sec at 230Kt  Make 30@ Hdg Err Max demand -->
+    <!--   30deg roll causes alt loss -->
 		<!--Kp>/autopilot/internal/target-kp-for-heading-deg</Kp-->
-		<Kp>-1.2</Kp>
+		<Kp>-1.0000667 </Kp>
 		<beta>1.0</beta>
 		<alpha>0.1</alpha>
-		<gamma>0.0</gamma>
-		<Ti>12.0</Ti>
+		<gamma>1.0</gamma>
 		<Td>0.001</Td>
-		<!--u_min>-20.0</u_min-->
-		<!--u_max>20.0</u_max-->
-		<u_min>/autopilot/internal/heading-min-roll</u_min>
-		<u_max>/autopilot/internal/heading-max-roll</u_max>
+		<Ti>12.0008000</Ti>
+		<!--u_min>/autopilot/internal/heading-min-roll</u_min-->
+		<!--u_max>/autopilot/internal/heading-max-roll</u_max-->
+		<u_min>-20.0</u_min>
+		<u_max>20.0</u_max>
 	</config>
 </pid-controller>
 
@@ -282,6 +301,30 @@ if you contacted me before making any changes to this software.
 	<!-- polly max-rate-of-change>6.0</max-rate-of-change-->
   </filter>
 
+<!-- polly from 757 seem to be the only source of signal    -->
+	<filter>
+    <name>FLT-tgtAutoHdg=>mod180</name>
+    <type>gain</type>
+    <debug type="bool">false</debug>
+    <gain>1</gain>
+    <input>
+      <property>instrumentation/nav[0]/radials/target-auto-hdg-deg</property>
+      <offset>
+        <property>orientation/heading-deg</property>
+        <scale>-1</scale>
+      </offset>
+    </input>
+    <output>autopilot/internal/nav1-heading-error-deg</output>
+    <period>
+        <min>-180</min>
+        <max>180</max>
+    </period>
+  </filter>
+
+
+
+
+
   <!-- Nav1 hold.  2 stage cascade controller. -->
 
   <!-- Stage #1 sets target roll based on diff between current heading -->
@@ -315,13 +358,13 @@ if you contacted me before making any changes to this software.
     <property>/systems/tune/pids-lat2-out</property>
 	</output>
 	<config>
-		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
-		<!-- polly Kp>-2.6</Kp-->
+		<!--Kp>/autopilot/internal/target-kp-for-heading-deg</Kp-->
+		<Kp>-1.0</Kp>
 		<beta>1.0</beta>
-		<alpha>0.1</alpha>
-		<gamma>0.0</gamma>
-		<Ti>15.0</Ti>
-		<Td>0.0004</Td>
+		<alpha>0.001</alpha>
+		<gamma>1.0</gamma>
+		<Ti>12.0</Ti>
+		<Td>0.0000000001</Td>
 		<u_min>-20.0</u_min>
 		<u_max>20.0</u_max>
 	</config>
@@ -739,6 +782,20 @@ if you contacted me before making any changes to this software.
     </config>
   </pid-controller>
 
+  <!-- Lookahead for Altitude hold    -->
+  <predict-simple>
+  <debug>false</debug>
+  <name>LAH-alt-ft</name>
+  <seconds>8.0</seconds>
+  <input>
+    <prop>/instrumentation/altimeter/indicated-altitude-ft</prop>
+  </input>
+  <output>
+    <property>/autopilot/internal/ahead-altitude-ft</property>
+  </output>
+  <filter-gain>0.1</filter-gain>
+  </predict-simple>
+  
   <!-- Altitude hold.  2 stage cascade controller. -->
 
   <!-- Stage #1 sets target rate of climb based on diff between current alt -->
@@ -754,7 +811,8 @@ if you contacted me before making any changes to this software.
     </enable>
     <input>
       <!-- <prop>/position/altitude-ft</prop> -->
-      <prop>/instrumentation/altimeter/indicated-altitude-ft</prop>
+      <!--prop>/instrumentation/altimeter/indicated-altitude-ft</prop-->
+      <property>/autopilot/internal/ahead-altitude-ft</property>
     </input>
     <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
@@ -764,7 +822,7 @@ if you contacted me before making any changes to this software.
       <expression>
         <product>      
            <property>/systems/tune/poke-vert-mark</property>
-           <value>100</value>
+           <value>1000</value>
         </product>      
       </expression>
     </reference>
@@ -780,10 +838,11 @@ if you contacted me before making any changes to this software.
 	  </output>
     <config>
       <!-- 50Fps-3000fpm Max demand for 1000ft error: gain 50 / 1000  -->
-      <Kp>0.050</Kp>
-      <Ti>24.00</Ti>
-      <Td>0.0000001</Td>
-      <alpha>0.100</alpha>
+      <!--    Err term can be huge so D term Td, alpha must be squashed -->
+      <Kp>0.1000100</Kp>
+      <Ti>10.00</Ti>
+      <Td>0.000001</Td>
+      <alpha>0.000001</alpha>
       <beta>1.0</beta>
       <gamma>1.000</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
