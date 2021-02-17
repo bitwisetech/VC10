@@ -1,4 +1,4 @@
-####    autopilot/route-manager help-functions adapted for VC10                                 ####
+####    autopilot/route-manager help-functions adapted for VC10                                ####
 ####    Author: Markus Bulik                                                                   ####
 ####    This file is licenced under the terms of the GNU General Public Licence V2 or later    ####
 ##############################################################################

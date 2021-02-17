@@ -74,12 +74,20 @@ if you contacted me before making any changes to this software.
   <object-name>turn.002</object-name>
   <property>autopilot/Bendix-PB-20/controls/mode-selector</property>
   <interpolation>
+    <!--
     <entry><ind> 0</ind><dep>   0.0</dep></entry>
     <entry><ind> 1</ind><dep> -28.0</dep></entry>
     <entry><ind> 2</ind><dep> -57.5</dep></entry>
     <entry><ind> 3</ind><dep> -90.0</dep></entry>
     <entry><ind> 4</ind><dep>-123.0</dep></entry>
     <entry><ind> 5</ind><dep>-182.0</dep></entry>
+    -->
+    <entry><ind> 0</ind><dep>   0.0</dep></entry>
+    <entry><ind> 1</ind><dep> -30.0</dep></entry>
+    <entry><ind> 2</ind><dep> -60.0</dep></entry>
+    <entry><ind> 3</ind><dep>-110.0</dep></entry>
+    <entry><ind> 4</ind><dep>-163.0</dep></entry>
+    <entry><ind> 5</ind><dep>-220.0</dep></entry>
   </interpolation>
   <center>
     <x-m> 0.0050</x-m>
@@ -87,9 +95,9 @@ if you contacted me before making any changes to this software.
     <z-m> 0.0</z-m>
   </center>
   <axis>
-    <x>0.0</x>
+    <x>1.0</x>
     <y>0.0</y>
-    <z>1.0</z>
+    <z>0.0</z>
   </axis>
 </animation>
   

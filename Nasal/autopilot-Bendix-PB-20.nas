@@ -1,4 +1,4 @@
-####    autopilot/BendixPB20.nas help-functions adapted for VC10                                ####
+####    autopilot/BendixPB20.nas help-functions adapted for VC10                               ####
 ####    Author: Markus Bulik                                                                   ####
 ####    This file is licenced under the terms of the GNU General Public Licence V2 or later    ####
 ##############################################################################
@@ -10,11 +10,11 @@
 
 ### Bendix PB 20 ###
 # Knobs:
-# /autopilot/Bendix-PB-20/controls/active : true/false
-# /autopilot/Bendix-PB-20/controls/alt-active : true/false
-# /autopilot/Bendix-PB-20/controls/mode-selector : 0: NAV, 1: HDG, 2: MAN, 3: LOC VOR, 4: GS AUTO, 5: GS MAN
+# /autopilot/Bendix-PB-20/controls/active          : true/false
+# /autopilot/Bendix-PB-20/controls/alt-active      : true/false
+# /autopilot/Bendix-PB-20/controls/mode-selector   : 0: NAV, 1: HDG, 2: MAN, 3: LOC VOR, 4: GS AUTO, 5: GS MAN
 # /autopilot/Bendix-PB-20/settings/pitch-wheel-deg : -30 .. 30
-# /autopilot/Bendix-PB-20/settings/roll-knob-deg : -35 .. 35
+# /autopilot/Bendix-PB-20/settings/roll-knob-deg   : -35 .. 35
 
 # init
 var listenerApPB20InitFunc = func {
