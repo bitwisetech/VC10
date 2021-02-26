@@ -57,11 +57,11 @@ if you contacted me before making any changes to this software.
 			<model type="int">2</model>
 		</rating>
 
-<!--		<systems n="0">
+		<systems n="0">
 			<autopilot n="0">
 				<path>Aircraft/VC10/Systems/autopilot.xml</path>
 			</autopilot>
-		</systems> -->
+		</systems>
 
 		<instrumentation>
 			<path>Aircraft/VC10/Systems/instrumentation.xml</path>
