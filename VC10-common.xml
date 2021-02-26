@@ -375,7 +375,8 @@ if you contacted me before making any changes to this software.
 		</constant> 
 		<Bendix-PB-20>
 			<controls>
-				<mode-selector type="int">2</mode-selector>	  <!-- 2 is manual control-->
+				<!--mode-selector type="int">2</mode-selector-->	  <!--bthp VC10 2 is manual control-->
+				<mode-selector type="int">1</mode-selector>	  <!-- 1 is manual control-->
 				<active type="bool">0</active>	  			  <!-- the AP engage switch -->	
 			</controls>	
 		</Bendix-PB-20> 

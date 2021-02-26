@@ -288,7 +288,7 @@ _______________________________________________________
 			<file>Aircraft/VC10/Nasal/tyresmoke.nas</file>
 			<file>Aircraft/VC10/Nasal/brakesystem.nas</file>
 			<file>Aircraft/VC10/Nasal/autopilot-routemanager.nas</file>
-			<file>Aircraft/VC10/Nasal/autopilot-Bendix-PB-20.nas</file>
+			<file>Aircraft/VC10/Nasal/autopilot-Bendix-PB-20-VC10.nas</file>
 			<file>Aircraft/VC10/Nasal/tcas.nas</file>
 			<file>Aircraft/VC10/Nasal/registration.nas</file>
 			<file>Aircraft/VC10/Nasal/manual.nas</file>	
