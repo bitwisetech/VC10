@@ -686,6 +686,12 @@ var listenerApNav1NearFarFunc = func {
 		#print ("-> listenerApNav1NearFarFunc -> installed");
 
 		var navDistance = getprop("instrumentation/nav[0]/nav-distance");
+    
+    #bthp need this to avoid nil in numeric next
+		var navDistance = getprop("instrumentation/nav[0]/nav-distance");
+    if (navDistance == nil ) {
+      navDistance = 99999;
+    }
 
 		# 'smooth' VOR-transition
 		if (getprop("instrumentation/nav[0]/gs-in-range") == 0 and navDistance < 2000.0) {
