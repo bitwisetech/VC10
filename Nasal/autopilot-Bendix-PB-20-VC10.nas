@@ -71,7 +71,7 @@ var listenerApPB20ActiveFunc = func {
 	}
 	bendixPB20ActivePrev = getprop("autopilot/Bendix-PB-20/controls/active");
 }
-setlistener("autopilot/Bendix-PB-20/controls/active"    , listenerApPB20ActiveFunc);
+#setlistener("autopilot/Bendix-PB-20/controls/active"    , listenerApPB20ActiveFunc);
 setlistener("autopilot/Bendix-PB-20/controls/AP-1active", listenerApPB20ActiveFunc);
 setlistener("autopilot/Bendix-PB-20/controls/AP-2active", listenerApPB20ActiveFunc);
 
@@ -81,6 +81,7 @@ setlistener("autopilot/Bendix-PB-20/controls/AP-2active", listenerApPB20ActiveFu
 ##GooTxlate ERROR: when switching back from Mode 4.5 to 3.2.1, GS remains switched on instead of ALT (with switched on Alt-Switch) 
 ## Means for VC10 the numbers for modes are different
 #
+##
 var listenerApPB20ModeFunc = func {
   #bthp  print("listenerApPB20ModeFunc");
 
@@ -190,10 +191,11 @@ var listenerApPB20ModeFunc = func {
     
     if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 5) {
 			# FLARE  Mode
+			setprop("autopilot/locks/heading", getprop("orientation/heading-deg"));
 			setprop("autopilot/locks/flare-mode", 1);
+			setprop("autopilot/locks/heading", "dg-heading-hold");
 		  # resets
 			setprop("autopilot/locks/altitude", "");
-			setprop("autopilot/locks/heading", "");
 		}
     if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 6) {
       # GPS NAV - Mode
@@ -438,7 +440,7 @@ setlistener("controls/special/yoke-switch1", func (s1){
 );
 
 ##
-trip_IAS_active = func(node) {
+var trip_IAS_active = func(node) {
   if ( node.getValue() != 1 ){
     setprop("autopilot/locks/speed", "");
   } else {
@@ -451,8 +453,8 @@ trip_IAS_active = func(node) {
 setlistener("/autopilot/Bendix-PB-20/controls/IAS-active", trip_IAS_active);
 
 ##
-trip_MACH_active = func {
-  if ( cmdarg().getValue() != 1 ){
+var trip_MACH_active = func(node) {
+  if (node.getValue() != 1 ){
     setprop("autopilot/controls/speed", "");
   } else {
     setprop("autopilot/controls/speed", "speed-with-pitch");
@@ -463,8 +465,8 @@ trip_MACH_active = func {
 setlistener("/autopilot/Bendix-PB-20/controls/MACH-active", trip_MACH_active);
 
 ##
-trip_NAV_active = func {
-  if ( cmdarg().getValue() != 1 ){
+var trip_NAV_active = func(node) {
+  if (node.getValue() != 1 ){
     setprop("autopilot/locks/heading", "");
   } else {
     setprop("autopilot/locks/heading", "nav1-hold");
@@ -473,4 +475,24 @@ trip_NAV_active = func {
 }
 #
 setlistener("/autopilot/Bendix-PB-20/controls/NAV-active", trip_NAV_active);
+
+##
+var pb20_pitchwheel_incr = func(tIncr) {
+  var tNode = props.globals.getNode("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", 1);
+  var tVal  = ( tNode.getValue() or 0) + tIncr;
+  tVal = (tVal >  30) ?  30 : tVal;
+  tVal = (tVal < -25) ? -25 : tVal;
+  tNode.setValue( tVal);
+  print("pb20_pitchWheel: ", tNode.getValue());
+}
+
+##
+var pb20_turnwheel_incr = func(tIncr) {
+  var tNode = props.globals.getNode("autopilot/Bendix-PB-20/settings/turn", 1);
+  var tVal  = ((tNode.getValue() or 0) + tIncr) ;  
+  tVal = (tVal >  35) ?  35 : tVal;
+  tVal = (tVal < -35) ? -35 : tVal;
+  tNode.setValue( tVal);
+  print("pb20_turnWheel: ", tNode.getValue());
+}
 
