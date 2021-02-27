@@ -191,11 +191,21 @@ var listenerApPB20ModeFunc = func {
     
     if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 5) {
 			# FLARE  Mode
-			setprop("autopilot/locks/heading", getprop("orientation/heading-deg"));
-			setprop("autopilot/locks/flare-mode", 1);
+      #   Best be at pitch
+			setprop("autopilot/settings/target-pitch-deg", (getprop("orientation/pitch-deg") + 4.0));
+			setprop("autopilot/locks/altitude", "pitch-hold");
+      setprop("autopilot/Bendix-PB-20/controls/ALT-active", "0");
+      #     and on line 
+			setprop("autopilot/settings/heading-bug-deg",  getprop("orientation/heading-deg"));
 			setprop("autopilot/locks/heading", "dg-heading-hold");
+      setprop("autopilot/Bendix-PB-20/controls/NAV-active",  0);
+      #  Drop Auto THR  Manual THR for on line reject
+      setprop("autopilot/Bendix-PB-20/controls/MACH-active",  0);
+      setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
+			setprop("autopilot/locks/speed", "");
+			setprop("autopilot/locks/flare-mode", 1);
 		  # resets
-			setprop("autopilot/locks/altitude", "");
+			## try pitch hold setprop("autopilot/locks/altitude", "");
 		}
     if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 6) {
       # GPS NAV - Mode
