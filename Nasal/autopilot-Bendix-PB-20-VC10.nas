@@ -309,8 +309,8 @@ var listenerApPB20AltFunc = func {
 		setprop("autopilot/locks/altitude", "");
 	}
   #bthp 
-  print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
-            "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
+  #print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
+  #          "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
 }
 
 setlistener("autopilot/Bendix-PB-20/controls/alt-active", listenerApPB20AltFunc);
@@ -446,7 +446,7 @@ var trip_IAS_active = func(node) {
   } else {
     setprop("autopilot/locks/speed", "speed-with-throttle");
   }
-  print("trip_IAS_active - autopilot/locks/speed: ", getprop("autopilot/locks/speed"));
+  #print("trip_IAS_active - autopilot/locks/speed: ", getprop("autopilot/locks/speed"));
 
 }
 #
@@ -459,7 +459,7 @@ var trip_MACH_active = func(node) {
   } else {
     setprop("autopilot/controls/speed", "speed-with-pitch");
   }
-  print("trip_MACH_active: ", getprop("autopilot/controls/MACH-active"));
+  #print("trip_MACH_active: ", getprop("autopilot/controls/MACH-active"));
 }
 #
 setlistener("/autopilot/Bendix-PB-20/controls/MACH-active", trip_MACH_active);
@@ -471,7 +471,7 @@ var trip_NAV_active = func(node) {
   } else {
     setprop("autopilot/locks/heading", "nav1-hold");
   }  
-  print("trip_NAV_active - autopilot/locks/heading: ", getprop("autopilot/locks/heading"));
+  #print("trip_NAV_active - autopilot/locks/heading: ", getprop("autopilot/locks/heading"));
 }
 #
 setlistener("/autopilot/Bendix-PB-20/controls/NAV-active", trip_NAV_active);
@@ -483,7 +483,7 @@ var pb20_pitchwheel_incr = func(tIncr) {
   tVal = (tVal >  30) ?  30 : tVal;
   tVal = (tVal < -25) ? -25 : tVal;
   tNode.setValue( tVal);
-  print("pb20_pitchWheel: ", tNode.getValue());
+  #print("pb20_pitchWheel: ", tNode.getValue());
 }
 
 ##
@@ -493,6 +493,6 @@ var pb20_turnwheel_incr = func(tIncr) {
   tVal = (tVal >  35) ?  35 : tVal;
   tVal = (tVal < -35) ? -35 : tVal;
   tNode.setValue( tVal);
-  print("pb20_turnWheel: ", tNode.getValue());
+  #print("pb20_turnWheel: ", tNode.getValue());
 }
 
