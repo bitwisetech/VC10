@@ -17,6 +17,10 @@
 # /autopilot/Bendix-PB-20/controls/mode-selector : 0: HDG, 1: MAN, 2: LOC VOR, 3: GS AUTO, 4: GS MAN 5:FLARE
 # /autopilot/Bendix-PB-20/settings/pitch-wheel-deg : -30 .. 30
 # /autopilot/Bendix-PB-20/settings/turn : -35 .. 35
+# VC10 from AP_controller.xml
+# /autopilot/Bendix-PB-20/controls/IAS-active   : true/false
+# /autopilot/Bendix-PB-20/controls/MACH-active  : true/false
+# /autopilot/Bendix-PB-20/controls/NAV-active   : true/false
 
 # init
 var listenerApPB20InitFunc = func {
@@ -27,6 +31,9 @@ var listenerApPB20InitFunc = func {
 	setprop("autopilot/Bendix-PB-20/settings/turn", 0);
 	setprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", 0);
 	setprop("autopilot/Bendix-PB-20/mutex", "");
+	setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
+	setprop("autopilot/Bendix-PB-20/controls/MACH-active", 0);
+	setprop("autopilot/Bendix-PB-20/controls/NAV-active",  0);
 }
 setlistener("sim/signals/fdm-initialized", listenerApPB20InitFunc);
 
@@ -214,7 +221,7 @@ var listenerApPB20ModeFunc = func {
 	}
 }
 
-##bthp VC10 setlistener("autopilot/Bendix-PB-20/controls/active", listenerApPB20ModeFunc, 1,0);
+setlistener("autopilot/Bendix-PB-20/controls/active",             listenerApPB20ModeFunc, 1,0);
 setlistener("autopilot/Bendix-PB-20/controls/AP-1active",         listenerApPB20ModeFunc, 1,0);
 setlistener("autopilot/Bendix-PB-20/controls/AP-2active",         listenerApPB20ModeFunc, 1,0);
 setlistener("autopilot/Bendix-PB-20/controls/mode-selector",      listenerApPB20ModeFunc, 1,0);
@@ -299,10 +306,12 @@ var listenerApPB20AltFunc = func {
   else {
 		setprop("autopilot/locks/altitude", "");
 	}
-  #bthp print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
-   #          "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
+  #bthp 
+  print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
+            "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
 }
 
+setlistener("autopilot/Bendix-PB-20/controls/alt-active", listenerApPB20AltFunc);
 setlistener("autopilot/Bendix-PB-20/controls/ALT-active", listenerApPB20AltFunc);
 
 # settings from FG-menu (F11)
@@ -427,3 +436,41 @@ setlistener("controls/special/yoke-switch1", func (s1){
     }
   }
 );
+
+##
+trip_IAS_active = func(node) {
+  if ( node.getValue() != 1 ){
+    setprop("autopilot/locks/speed", "");
+  } else {
+    setprop("autopilot/locks/speed", "speed-with-throttle");
+  }
+  print("trip_IAS_active - autopilot/locks/speed: ", getprop("autopilot/locks/speed"));
+
+}
+#
+setlistener("/autopilot/Bendix-PB-20/controls/IAS-active", trip_IAS_active);
+
+##
+trip_MACH_active = func {
+  if ( cmdarg().getValue() != 1 ){
+    setprop("autopilot/controls/speed", "");
+  } else {
+    setprop("autopilot/controls/speed", "speed-with-pitch");
+  }
+  print("trip_MACH_active: ", getprop("autopilot/controls/MACH-active"));
+}
+#
+setlistener("/autopilot/Bendix-PB-20/controls/MACH-active", trip_MACH_active);
+
+##
+trip_NAV_active = func {
+  if ( cmdarg().getValue() != 1 ){
+    setprop("autopilot/locks/heading", "");
+  } else {
+    setprop("autopilot/locks/heading", "nav1-hold");
+  }  
+  print("trip_NAV_active - autopilot/locks/heading: ", getprop("autopilot/locks/heading"));
+}
+#
+setlistener("/autopilot/Bendix-PB-20/controls/NAV-active", trip_NAV_active);
+
