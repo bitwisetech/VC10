@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+ <!--    -->
+ <!--  Connect generic autopilot signals to standard names for afdi scope  -->
+ <!--     use different input props as scope input connections -->
+ <!--       actual labels are defined in as16.py           -->
+ <!--    -->
+<PropertyList>
+
+<debug type="bool">false</debug>
+
+  <filter>
+    <name>xbar-Lat1-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-lat1-out</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch0</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Lat2-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-lat2-out</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch1</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Lat3-Out</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-lat3-out</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-Ch2</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Lat4-Out</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <!--property>/systems/tune/pids-lat4-out</property-->
+      <value>0</value>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-Ch3</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-AILR</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/aileron</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch4</property>
+    </output>
+  </filter>
+
+  <filter>
+		<name>xbar-AILTrm</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/aileron-trim</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-Ch5</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-RUDD</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/rudder</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch6</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-RTrm</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/rudder-trim</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch7</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-ROLL</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/orientation/roll-deg</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch8</property>
+    </output>
+  </filter>
+
+  <!--    -->
+  <!--    -->
+  
+  <filter>
+    <name>xbar-Vrt1-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-vrt1-out</property>
+		  <!--property>/autopilot/settings/target-altitude-ft</property-->
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-Ch9</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Vrt2-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-vrt2-out</property>
+    </input>
+    <output>
+		  <property>/systems/tune/afdi-ChA</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Vrt3-Out</name>
+		<debug type="bool">false</debug>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-vrt3-out</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-ChB</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-Vrt4-Out</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/systems/tune/pids-vrt4-out</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-ChC</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-ELEV</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/elevator</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-ChD</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-ELTrm</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/controls/flight/elevator-trim</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-ChE</property>
+    </output>
+  </filter>
+
+  <filter>
+    <name>xbar-PITCH</name>
+    <type>gain</type>
+    <gain>1.0</gain>
+    <input>
+		  <property>/orientation/pitch-deg</property>
+    </input>
+    <output>
+			<property>/systems/tune/afdi-ChF</property>
+    </output>
+  </filter>
+
+</PropertyList>

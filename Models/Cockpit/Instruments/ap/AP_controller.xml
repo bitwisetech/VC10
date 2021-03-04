@@ -675,7 +675,6 @@ if you contacted me before making any changes to this software.
 					  getprop("autopilot/Bendix-PB-20/controls/ALT-active")); 
 				</script>
 			</binding>	
-			<binding>
 				<command>property-assign</command>
 				<property>autopilot/Bendix-PB-20/controls/IAS-active</property>
 				<value>0</value>
@@ -684,7 +683,7 @@ if you contacted me before making any changes to this software.
 				<command>property-assign</command>
 				<property>autopilot/Bendix-PB-20/controls/MACH-active</property>
 				<value>0</value>
-			</binding> -->
+			</binding> -->			
 			<!--			<binding>
 				<command>nasal</command>
 				<script>
