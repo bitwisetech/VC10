@@ -31,7 +31,7 @@ var listenerApPB20InitFunc = func {
 	setprop("autopilot/Bendix-PB-20/settings/turn", 0);
 	setprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", 0);
 	setprop("autopilot/Bendix-PB-20/mutex", "");
-setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
+	setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
 	setprop("autopilot/Bendix-PB-20/controls/MACH-active", 0);
 	setprop("autopilot/Bendix-PB-20/controls/NAV-active",  0);
 }
@@ -139,7 +139,7 @@ var listenerApPB20ModeFunc = func {
 		if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 2) {
 			# LOC VOR - Mode
 
-			setprop("autopilot/locks/heading", "nav1-hold");
+			setprop("autopilot//Bendix-PB-20/controls/NAV-active", 1);
 
 			# resets
 			if (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0) {
@@ -502,7 +502,7 @@ setlistener("/autopilot/Bendix-PB-20/controls/MACH-active", hear_MACH_active);
 
 ##
 var hear_NAV_active = func(node) {
-	if (node.getValue() != 1 ){
+	if ( 0 == (node.getValue() or 0) ){
 		setprop("autopilot/locks/heading", "");
 	} else {
 		setprop("autopilot/locks/heading", "nav1-hold");
