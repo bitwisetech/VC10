@@ -575,5 +575,11 @@ var hear_Damper_2active = func(node) {
 #
 setlistener("/autopilot/Bendix-PB-20/controls/Damper-2active", hear_Damper_2active);
 
-
+## Helper for e.g. joystick call to alter T/F value 
+var toggle_prop = func( tProp, dbug=0) {
+	setprop(tProp, 1 - ( getprop(tProp) or 0));
+	if ( dbug ) {
+		print("toggle_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+}  
 
