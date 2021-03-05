@@ -321,10 +321,6 @@ if you contacted me before making any changes to this software.
     </period>
   </filter>
 
-
-
-
-
   <!-- Nav1 hold.  2 stage cascade controller. -->
 
   <!-- Stage #1 sets target roll based on diff between current heading -->
@@ -436,7 +432,7 @@ if you contacted me before making any changes to this software.
 		</condition>
 		<property>/autopilot/internal/target-roll-deg</property>
 	</reference>
-		<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
+	<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
     <!--   polly: issue nasal only returns +ve tgtRoldeg near VOR ?? Section deleted -->  
 	<output>
 		<property>/autopilot/internal/aileron-servo</property>
@@ -451,7 +447,7 @@ if you contacted me before making any changes to this software.
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
 		<Ti>/autopilot/internal/target-ti-for-heading-hold</Ti>
-		<Td>0.05</Td>
+		<Td>0.0010050</Td>
 		<u_min>-1.0</u_min>
 		<u_max>1.0</u_max>
 	</config>

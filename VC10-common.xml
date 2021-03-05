@@ -58,6 +58,9 @@ if you contacted me before making any changes to this software.
 		<autopilot n="0">
 			<path>Aircraft/VC10/Systems/autopilot.xml</path>
 		</autopilot>
+		<autopilot n="1">
+			<path>Aircraft/VC10/Systems/ap-xbar.xml</path>
+		</autopilot>
 	</systems>
 
 	<instrumentation>
