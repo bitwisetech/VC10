@@ -837,10 +837,10 @@ if you contacted me before making any changes to this software.
       <!--    Err term can be huge so D term Td, alpha must be squashed -->
       <Kp>0.1000100</Kp>
       <Ti>10.00</Ti>
-      <Td>0.000001</Td>
+      <Td>0.01</Td>
       <alpha>0.000001</alpha>
       <beta>1.0</beta>
-      <gamma>1.000</gamma>
+      <gamma>0.000</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
       <u_max>50.0</u_max>   <!-- maximum output clamp -->
     </config>
