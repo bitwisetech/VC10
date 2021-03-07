@@ -204,7 +204,7 @@ if you contacted me before making any changes to this software.
 		<Kp>-1.0000667 </Kp>
 		<beta>1.0</beta>
 		<alpha>0.1</alpha>
-		<gamma>1.0</gamma>
+		<gamma>0.0</gamma>
 		<Td>0.001</Td>
 		<Ti>12.0008000</Ti>
 		<!--u_min>/autopilot/internal/heading-min-roll</u_min-->
@@ -358,7 +358,7 @@ if you contacted me before making any changes to this software.
 		<Kp>-1.0</Kp>
 		<beta>1.0</beta>
 		<alpha>0.001</alpha>
-		<gamma>1.0</gamma>
+		<gamma>0.0</gamma>
 		<Ti>12.0</Ti>
 		<Td>0.0000000001</Td>
 		<u_min>-20.0</u_min>
@@ -574,15 +574,15 @@ if you contacted me before making any changes to this software.
 			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
 		</input>
 		<reference>
-      <condition>
-        <property>/systems/tune/pids-lat4-open</property>
-      </condition>
-      <expression>
-        <product>
-          <property>/systems/tune/poke-latr-mark</property>
-          <value>10.0</value>
-        </product>  
-	    </expression>
+			<condition>
+				<property>/systems/tune/pids-lat4-open</property>
+			</condition>
+			<expression>
+				<product>
+					<property>/systems/tune/poke-latr-mark</property>
+					<value>10.0</value>
+				</product>  
+			</expression>
 		</reference>
 		<reference>
 			<value>0.0</value>
@@ -594,7 +594,7 @@ if you contacted me before making any changes to this software.
 			<Kp>0.025</Kp>
 			<beta>1.0</beta>
 			<alpha>0.1</alpha>
-			<gamma>1.0</gamma>
+			<gamma>0.0</gamma>
 			<Ti>8.0</Ti>
 			<Td>0.001</Td>
 			<u_min>-0.2</u_min>
@@ -840,7 +840,7 @@ if you contacted me before making any changes to this software.
       <Td>0.01</Td>
       <alpha>0.000001</alpha>
       <beta>1.0</beta>
-      <gamma>0.000</gamma>
+      <gamma>0.0</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
       <u_max>50.0</u_max>   <!-- maximum output clamp -->
     </config>
@@ -949,7 +949,7 @@ if you contacted me before making any changes to this software.
       <Kp>-0.002</Kp>
       <beta>2.0</beta>
       <alpha>0.1</alpha>
-      <gamma>1.0</gamma>
+      <gamma>0.0</gamma>
       <Ti>20.0</Ti>
       <Td>0.00251</Td>
       <u_min>-1.0</u_min>

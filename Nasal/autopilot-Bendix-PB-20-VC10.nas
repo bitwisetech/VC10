@@ -68,7 +68,7 @@ var listenerApPB20ActiveFunc = func {
 			}
 		}
 	}
-	bendixPB20ActivePrev = getprop("autopilot/Bendix-PB-20/controls/active");
+	bendixPB20Active = getprop("autopilot/Bendix-PB-20/controls/active");
 }
 #setlistener("autopilot/Bendix-PB-20/controls/active"    , listenerApPB20ActiveFunc);
 setlistener("autopilot/Bendix-PB-20/controls/AP-1active", listenerApPB20ActiveFunc);
@@ -90,10 +90,10 @@ var listenerApPB20ModeFunc = func {
 
 	#VC10 Gate either AP1 or Ap2 active to common prop
 	if (  ((getprop("autopilot/Bendix-PB-20/controls/AP-1active") or 0) == 1)
-	or ((getprop("autopilot/Bendix-PB-20/controls/AP-2active") or 0) == 1) ) {
-		setprop("autopilot/Bendix-PB-20/controls/active", 1);
+	or (   (getprop("autopilot/Bendix-PB-20/controls/AP-2active") or 0) == 1) ) {
+		    setprop("autopilot/Bendix-PB-20/controls/active", 1);
 	} else {
-		setprop("autopilot/Bendix-PB-20/controls/active", 0);
+		    setprop("autopilot/Bendix-PB-20/controls/active", 0);
 	}
 
 	if (getprop("autopilot/Bendix-PB-20/controls/active") == 1) {
@@ -123,8 +123,9 @@ var listenerApPB20ModeFunc = func {
 			setprop("autopilot/locks/heading", "wing-leveler");
 
 			if (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0) {
-				setprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", getprop("orientation/pitch-deg"));
-				listenerApPB20MANPitchFunc();
+ 				setprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", getprop("orientation/pitch-deg"));
+				## ?? below double calls listener which hears above change
+				#listenerApPB20MANPitchFunc();
 
 				setprop("autopilot/locks/altitude", "pitch-hold");
 			}
@@ -284,11 +285,13 @@ var listenerApPB20MANPitchFunc = func {
 
 	if (	getprop("autopilot/Bendix-PB-20/controls/active") == 1 and
 	(getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 1) ) {
-		if (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0) {
+		if ( (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0)
+        and  (getprop("autopilot/Bendix-PB-20/controls/alt-active") == 0)  ){
 			var pitchDeg = getprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg");
 			pitchDeg = (pitchDeg > 30 ? 30 : pitchDeg);
 			pitchDeg = (pitchDeg < -30 ? -30 : pitchDeg);
 			setprop("autopilot/settings/target-pitch-deg", pitchDeg);
+			## print("autopilot/settings/target-pitch-deg: ", getprop("autopilot/settings/target-pitch-deg"));
 		}
 	}
 }
@@ -298,14 +301,18 @@ setlistener("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", listenerApPB20MAN
 var listenerApPB20AltFunc = func {
 
 	if (getprop("autopilot/Bendix-PB-20/mutex") == "") {
+		# print("ALT get mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));      
 		bendixPB20MutexSet("PB20-ALT");
 	}
 	else {
+		#print("ALT no mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));      
 		return;
 	}
 
 	if (getprop("autopilot/Bendix-PB-20/controls/active") == 1) {
+		#print("controls active");      
 		if (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 1) {
+		#print(" controls ALT-active");      
 
 			# set altitude-hold-value to the actual altitude plus an offset dependent on vspeed
 
@@ -318,10 +325,14 @@ var listenerApPB20AltFunc = func {
 			setprop("autopilot/locks/altitude", "altitude-hold");
 		}
 		else {
+        	#print("controls ! ALT active");      
+
 			if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 1) {
+        	    #print("controls ! ALT active mode 1");      
 				setprop("autopilot/locks/altitude", "pitch-hold");
 			}
 			else {
+        	    #print("controls ! ALT active mode 1");      
 				if (getprop("autopilot/locks/altitude") == "altitude-hold") {
 					setprop("autopilot/locks/altitude", "");
 				}
@@ -335,7 +346,8 @@ var listenerApPB20AltFunc = func {
   #          "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
 }
 
-setlistener("autopilot/Bendix-PB-20/controls/alt-active", listenerApPB20AltFunc);
+## cannot listen on both since both changing looks like twice hit 
+#setlistener("autopilot/Bendix-PB-20/controls/alt-active", listenerApPB20AltFunc);
 setlistener("autopilot/Bendix-PB-20/controls/ALT-active", listenerApPB20AltFunc);
 
 # settings from FG-menu (F11)
@@ -528,8 +540,7 @@ var hear_pitch_wheel_deg = func(node) {
 	setprop("autopilot/Bendix-PB-20/controls/ALT-active",  0);
 	setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
 	setprop("autopilot/Bendix-PB-20/controls/MACH-active", 0);
-	#
-	print("hear_pitch_wheel: ", node.getValue());
+	#print("hear_pitch_wheel: ", node.getValue());
 }
 #
 setlistener("/autopilot/Bendix-PB-20/settings/pitch-wheel-deg", hear_pitch_wheel_deg);
@@ -558,8 +569,7 @@ var hear_Damper_1active = func(node) {
 	#setprop("autopilot/Bendix-PB-20/controls/ALT-active",  0);
 	#setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
 	#setprop("autopilot/Bendix-PB-20/controls/MACH-active", 0);
-	#
-	print("hear_pitch_wheel: ", node.getValue());
+	#print("hear_pitch_wheel: ", node.getValue());
 }
 #
 setlistener("/autopilot/Bendix-PB-20/controls/Damper-1active", hear_Damper_1active);
@@ -569,17 +579,20 @@ var hear_Damper_2active = func(node) {
 	#setprop("autopilot/Bendix-PB-20/controls/ALT-active",  0);
 	#setprop("autopilot/Bendix-PB-20/controls/IAS-active",  0);
 	#setprop("autopilot/Bendix-PB-20/controls/MACH-active", 0);
-	#
-	print("hear_pitch_wheel: ", node.getValue());
+	#print("hear_pitch_wheel: ", node.getValue());
 }
 #
 setlistener("/autopilot/Bendix-PB-20/controls/Damper-2active", hear_Damper_2active);
 
 ## Helper for e.g. joystick call to alter T/F value 
 var toggle_prop = func( tProp, dbug=0) {
-	setprop(tProp, 1 - ( getprop(tProp) or 0));
 	if ( dbug ) {
-		print("toggle_prop: ", tProp, ": ", getprop(tProp)); 
+		print("entr toggle_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+	setprop(tProp, (1 - ( getprop(tProp) or 0)));
+	if ( dbug ) {
+		print("exit 
+        toggle_prop: ", tProp, ": ", getprop(tProp)); 
 	}
 }  
 
