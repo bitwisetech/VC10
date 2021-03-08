@@ -945,8 +945,8 @@ if you contacted me before making any changes to this software.
       <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
     <config>
-      <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
-      <Kp>-0.002</Kp>
+      <Kp>/autopilot/internal/target-kp-for-alt-hold</Kp>
+      <!--Kp>-0.002</Kp-->
       <beta>2.0</beta>
       <alpha>0.1</alpha>
       <gamma>0.0</gamma>

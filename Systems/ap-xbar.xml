@@ -188,7 +188,7 @@
   </filter>
 
   <filter>
-    <name>xbar-vrt2-out</name>
+    <name>xbar-vrt1-out</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
@@ -200,7 +200,7 @@
   </filter>
 
   <filter>
-    <name>xbar-vrt1-out</name>
+    <name>xbar-vrt2-out</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>

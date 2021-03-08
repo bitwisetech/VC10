@@ -209,7 +209,7 @@ var listenerApPB20ModeFunc = func {
 			setprop("autopilot/settings/target-pitch-deg", (getprop("orientation/pitch-deg") + 4.0));
 			listenerApPB20MANPitchFunc();
 			setprop("autopilot/locks/altitude", "pitch-hold");
-      setprop("autopilot/Bendix-PB-20/controls/ALT-active", "0");
+			setprop("autopilot/Bendix-PB-20/controls/ALT-active", "0");
       #     and set HDG to Line 
 			setprop("autopilot/settings/heading-bug-deg",  getprop("orientation/heading-deg"));
 			setprop("autopilot/locks/heading", "dg-heading-hold");
@@ -311,8 +311,7 @@ var listenerApPB20MANPitchFunc = func {
 
 	if (	getprop("autopilot/Bendix-PB-20/controls/active") == 1 and
 	(getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 1) ) {
-		if ( (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0)
-        and  (getprop("autopilot/Bendix-PB-20/controls/alt-active") == 0)  ){
+		if ( (getprop("autopilot/Bendix-PB-20/controls/ALT-active") == 0) ){
 			var pitchDeg = getprop("autopilot/Bendix-PB-20/settings/pitch-wheel-deg");
 			pitchDeg = (pitchDeg > 30 ? 30 : pitchDeg);
 			pitchDeg = (pitchDeg < -30 ? -30 : pitchDeg);
