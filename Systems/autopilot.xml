@@ -87,7 +87,7 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
   <!-- Roll Axis Modes                                                 -->
   <!-- =============================================================== -->
-  <!-- polly moved servo drivers to end of sections -->
+  <!-- bthp moved servo drivers to end of sections -->
 
   <!-- Limit change rate from PB-20 Roll Knob  -->
   <filter>
@@ -119,7 +119,7 @@ if you contacted me before making any changes to this software.
 		<property>/autopilot/internal/wing-leveler-target-roll-deg</property>
 	</input>
 	<output>/autopilot/internal/target-roll-deg</output>
-  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat2-out</property>
 	</output>
@@ -176,7 +176,7 @@ if you contacted me before making any changes to this software.
 	<input>
 		<property>/autopilot/internal/heading-bug-error-deg</property>
 	</input>
-  <!-- polly  kybd hotkey direct control -->
+  <!-- bthp  kybd hotkey direct control -->
   <reference>
     <condition>
       <property>/systems/tune/pids-lat1-open</property>
@@ -193,7 +193,7 @@ if you contacted me before making any changes to this software.
 	<output>
 		<property>/autopilot/internal/target-roll-deg-unfiltered</property>
 	</output>
-  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat1-out</property>
 	</output>
@@ -218,7 +218,7 @@ if you contacted me before making any changes to this software.
 
   <!-- Stage #1 sets target roll based on diff between current heading -->
   <!-- and target heading. -->
-  <!-- tbd polly replaced with =- 180 filter and PID in 707    -->
+  <!-- tbd bthp replaced with =- 180 filter and PID in 707    -->
   <pi-simple-controller>
 	<!--name>True Heading Hold (DG based) Stage 1</name-->
 	<name>PIS-TruHdgErr=>TgtRolUnf~L1</name>
@@ -234,7 +234,7 @@ if you contacted me before making any changes to this software.
 	<input>
 		<property>/autopilot/internal/true-heading-error-deg</property>
 	</input>
-  <!-- polly  kybd hotkey direct control -->
+  <!-- bthp  kybd hotkey direct control -->
   <reference>
     <condition>
       <property>/systems/tune/pids-lat1-open</property>
@@ -250,7 +250,7 @@ if you contacted me before making any changes to this software.
 	<output>
 		<property>/autopilot/internal/target-roll-deg-unfiltered</property>
 	</output>
-  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat1-out</property>
 	</output>
@@ -293,15 +293,15 @@ if you contacted me before making any changes to this software.
 	</input>
 	<input>/autopilot/internal/target-roll-deg-unfiltered</input>
 	<output>/autopilot/internal/target-roll-deg</output>
-  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat2-out</property>
 	</output>
 	<max-rate-of-change>3.0</max-rate-of-change>
-	<!-- polly max-rate-of-change>6.0</max-rate-of-change-->
+	<!-- bthp max-rate-of-change>6.0</max-rate-of-change-->
   </filter>
 
-<!-- polly from 757 seem to be the only source of signal    -->
+<!-- bthp from 757 seem to be the only source of signal    -->
 	<filter>
     <name>FLT-tgtAutoHdg=>mod180</name>
     <type>gain</type>
@@ -333,7 +333,7 @@ if you contacted me before making any changes to this software.
 		<prop>/autopilot/locks/heading</prop>
 		<value>nav1-hold</value>
 	</enable>
-  <!-- polly  Inject input signal via kybd hotkey -->
+  <!-- bthp  Inject input signal via kybd hotkey -->
   <input>
     <condition>
       <property>/systems/tune/pids-lat2-open</property>
@@ -349,7 +349,7 @@ if you contacted me before making any changes to this software.
 	<output>
 		<prop>/autopilot/internal/target-roll-deg</prop>
 	</output>
-  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat2-out</property>
 	</output>
@@ -396,7 +396,7 @@ if you contacted me before making any changes to this software.
 	<input>
 		<property>/orientation/roll-deg</property>
 	</input>
-  <!-- polly  Inject input signal via kybd hotkey -->
+  <!-- bthp  Inject input signal via kybd hotkey -->
   <reference>
     <condition>
       <property>/systems/tune/pids-lat3-open</property>
@@ -409,7 +409,7 @@ if you contacted me before making any changes to this software.
     </expression>
   </reference>
 	<reference>
-    <!-- polly WL filter output renamed to tgt-rol-deg and included  -->
+    <!-- WL filter output renamed to tgt-rol-deg and included  -->
 		<condition>
 			<or>
 			  <equals>
@@ -433,11 +433,11 @@ if you contacted me before making any changes to this software.
 		<property>/autopilot/internal/target-roll-deg</property>
 	</reference>
 	<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
-    <!--   polly: issue nasal only returns +ve tgtRoldeg near VOR ?? Section deleted -->  
+    <!--   bthp: issue nasal only returns +ve tgtRoldeg near VOR ?? Section deleted -->  
 	<output>
 		<property>/autopilot/internal/aileron-servo</property>
 	</output>
-	<!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	<!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat3-out</property>
 	</output>
@@ -487,7 +487,7 @@ if you contacted me before making any changes to this software.
 		<input>/autopilot/internal/aileron-servo</input>
 		<output>/controls/flight/aileron</output>
 		<output>/controls/flight/aileron-fcs</output>
-		<!-- polly max-rate-of-change>0.8</max-rate-of-change-->
+		<!-- bthp max-rate-of-change>0.8</max-rate-of-change-->
 		<max-rate-of-change>1.6</max-rate-of-change>
 	</filter>
 
@@ -527,7 +527,7 @@ if you contacted me before making any changes to this software.
 			</and>
 		</condition>
 	</enable>
-  <!-- polly  Inject input signal via kybd hotkey -->
+  <!-- bthp  Inject input signal via kybd hotkey -->
   <input>
     <condition>
       <property>/systems/tune/pids-lat4-open</property>
@@ -541,7 +541,7 @@ if you contacted me before making any changes to this software.
 	<output>
 		<property>/autopilot/internal/rudder-servo</property>
 	</output>
-	<!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	<!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
     <property>/systems/tune/pids-lat4-out</property>
 	</output>
@@ -552,7 +552,7 @@ if you contacted me before making any changes to this software.
 	</config>
   </pi-simple-controller>
   
-  <!-- polly try Yaw Damper -->
+  <!-- bthp try Yaw Damper -->
 	<pid-controller>
 		<name>Heading Bug Hold (DG based) Stage 3 (Rudder)</name>
 		<name>PID-YawDmpSkid=>RddrSrv</name>
@@ -663,7 +663,7 @@ if you contacted me before making any changes to this software.
 		<output>
 			<property>/controls/flight/rudder-trim</property>
 		</output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
     <output>
       <property>/systems/tune/pids-lat5-out</property>
 	  </output>
@@ -694,7 +694,7 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/orientation/pitch-deg</prop>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey -->
+    <!-- bthp  Inject input signal via kybd hotkey -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
@@ -713,7 +713,7 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/elevator-servo</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
 		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
@@ -742,7 +742,7 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/orientation/alpha-deg</prop>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey -->
+    <!-- bthp  Inject input signal via kybd hotkey -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
@@ -761,7 +761,7 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/elevator-servo</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
 		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
@@ -796,7 +796,7 @@ if you contacted me before making any changes to this software.
 
   <!-- Stage #1 sets target rate of climb based on diff between current alt -->
   <!-- and target altitude. -->
-  <!-- polly change to pid: error proportional -->
+  <!-- bthp change to pid: error proportional -->
   <pid-controller>
     <!--name>Altitude Hold (Altimeter based) Stage 1</name-->
     <name>PID-AltHldErr=>TgtFps~V1</name>
@@ -810,7 +810,7 @@ if you contacted me before making any changes to this software.
       <!--prop>/instrumentation/altimeter/indicated-altitude-ft</prop-->
       <property>/autopilot/internal/ahead-altitude-ft</property>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
+    <!-- bthp  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt1-open</property>
@@ -828,7 +828,7 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/target-climb-rate-fps</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
     <output>
 		  <property>/systems/tune/pids-vrt1-out</property>
 	  </output>
@@ -861,7 +861,7 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/position/altitude-agl-ft</prop>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
+    <!-- bthp  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt1-open</property>
@@ -879,7 +879,7 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/target-climb-rate-fps</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <!--     3000fpm: 50fps   -->
     <output>
 		  <property>/systems/tune/pids-vrt1-out</property>
@@ -920,7 +920,7 @@ if you contacted me before making any changes to this software.
     <input>
       <property>/velocities/vertical-speed-fps</property>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey -->
+    <!-- bthp  Inject input signal via kybd hotkey -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
@@ -940,7 +940,7 @@ if you contacted me before making any changes to this software.
     <output>
       <property>/autopilot/internal/elevator-servo</property>
     </output>
-    <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+    <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
     <output>
       <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
@@ -981,7 +981,7 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/velocities/vertical-speed-fps</prop>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey -->
+    <!-- bthp  Inject input signal via kybd hotkey -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
@@ -995,7 +995,7 @@ if you contacted me before making any changes to this software.
      <output>
       <prop>/autopilot/internal/elevator-servo</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
 		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
@@ -1034,7 +1034,7 @@ if you contacted me before making any changes to this software.
     <input>
       <prop>/velocities/vertical-speed-fps</prop>
     </input>
-    <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
+    <!-- bthp  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt2-open</property>
@@ -1054,7 +1054,7 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/elevator-servo</prop>
     </output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
 		  <property>/systems/tune/pids-vrt2-out</property>
 	  </output>
@@ -1174,7 +1174,7 @@ if you contacted me before making any changes to this software.
 					<property>/gear/gear[2]/wow</property>
 					<value>0.0</value>
 				</equals>
-        <!--  polly disable this nas driven    -->
+        <!--  bthp disable this nas driven    -->
         <value>0</value>
 			</condition>
 		</enable>
@@ -1240,7 +1240,7 @@ if you contacted me before making any changes to this software.
 		<output>/controls/flight/elevator</output>
 		<output>/controls/flight/elevator-fcs</output>
     <!--max-rate-of-change>0.2</max-rate-of-change-->
-    <!--  polly disable    -->
+    <!--  bthp disable    -->
     <max-rate-of-change>99990.2</max-rate-of-change>
 	</filter>
 
@@ -1296,7 +1296,7 @@ if you contacted me before making any changes to this software.
 		<input>
 			<property>/autopilot/internal/elevator-servo</property>
 		</input>
-    <!-- polly  Inject input signal via kybd hotkey tgt 100x ft  -->
+    <!-- bthp  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
       <condition>
         <property>/systems/tune/pids-vrt3-open</property>
@@ -1308,7 +1308,7 @@ if you contacted me before making any changes to this software.
     </reference>
 		<output>/controls/flight/elevator-trim</output>
 		<output>/controls/flight/elevator-trim-fcs</output>
-	  <!--polly: Copy signal to xbar: Stanza must not precede real output -->
+	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
 		  <property>/systems/tune/pids-vrt3-out</property>
 	  </output>
