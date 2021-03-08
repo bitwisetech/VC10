@@ -33,18 +33,20 @@ if you contacted me before making any changes to this software.
 <!--    ==== A/P Lateral Modes   ======          -->
 <!--    ===============================          -->
 <!--                                             -->
-<!--      Flt-RoC-RolKnob   =>  TgtRolDeg~L2     -->   
-<!--      Flt-HdgErr|180|   =>  HdgBugErrDeg     -->   
+<!--      FLT-RoC-RolKnob   =>  TgtRolDeg~L2     -->   
+<!--      FLT-HdgErr|180|   =>  HdgBugErrDeg     -->   
+<!--      PRE-HdgErr-deg    =>  AHdgBugErrDeg    -->   
 <!--      PID-DGHdgErr      =>  TgtRolUnf~L1     -->   
 <!--      PIS-TruHdgErr     =>  TgtRolUnf~L1     -->   
-<!--      Flt-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
+<!--      FLT-RoC-TgtRolUnf =>  TgtRolDeg~L2     -->   
 <!--      FLT-tgtAutoHdg    =>  mod180           -->
+<!--      PRE-Nav1Err-deg   =>  pre-nav1-err-deg -->
 <!--      PID-Nv1HdgErr     =>  TgtRolDeg~L2     -->   
 <!--      PID-TgtRolDeg     =>  AilrSrvo~L3      -->   
-<!--      Flt-RoC-AilSrv    =>  AilrFCS          -->   
+<!--      FLT-RoC-AilSrv    =>  AilrFCS          -->   
 <!--      PIS-RollDeg       =>  RddrSrv~L4       -->   
 <!--      PID-YawDmpSkid    =>  RddrSrv          -->   
-<!--      Flt-RoC-RdrSrv    =>  RdrFCS           -->   
+<!--      FLT-RoC-RdrSrv    =>  RdrFCS           -->   
 <!--      PID-YDSkidBall    =>  RdrTrm~L5        -->   
 <!--                                             -->
 <!--    ===============================          -->
@@ -61,8 +63,8 @@ if you contacted me before making any changes to this software.
 <!--      PID-GSRoCErr      =>  ElvSrv~V2        -->
 <!--      PID-VSHldFps      =>  ElvSrv~V2        -->
 <!--      PID-VSpdPit       =>  ThrSrv           -->
-<!--      Flt-RoC-ElvPosn   =>  ElvNasNoNo       -->
-<!--      Flt-Roc-ElvSrv    =>  ElvFCS           -->
+<!--      FLT-RoC-ElvPosn   =>  ElvNasNoNo       -->
+<!--      FLT-Roc-ElvSrv    =>  ElvFCS           -->
 <!--      PID-ElvSrv        =>  ElVTrmFCS~V3     -->
 <!--                                             -->
 <!--    ===============================          -->
@@ -72,12 +74,12 @@ if you contacted me before making any changes to this software.
 <!--    ===============================          -->
 <!--                                             -->
 <!--      PID-TgtSpdErr       =>  SpdPitDeg      -->
-<!--      Flt-RoC-SpPtDg      =>  SpPitDgFltd    -->
+<!--      FLT-RoC-SpPtDg      =>  SpPitDgFltd    -->
 <!--      PID-SpPitDgFltd     =>  ElvSrv         -->
 <!--      PID-AltSpPt-VS      =>  ThrSrv         -->
 <!--      PID-GSSpPt-VSNFFltd =>  ThrSrv         -->
 <!--      PID-TgtIAS          =>  ThrSrv         -->
-<!--      Flt-RoC-ThrSrv      =>  4xThrs         -->
+<!--      FLT-RoC-ThrSrv      =>  4xThrs         -->
 <!--                                             -->
 <!--    ===============================          -->
 
@@ -92,7 +94,7 @@ if you contacted me before making any changes to this software.
   <!-- Limit change rate from PB-20 Roll Knob  -->
   <filter>
 	<type>noise-spike</type>
-	<name>Flt-RoC-RolKnob=>TgtRolDeg~L2</name>
+	<name>FLT-RoC-RolKnob=>TgtRolDeg~L2</name>
 	<debug>false</debug>
 	<enable>
 		<equals>
@@ -106,7 +108,7 @@ if you contacted me before making any changes to this software.
 	<initialize-to>output</initialize-to>
 	<input>
     <condition>
-      <property>/systems/tune/pids-lat2-open</property>
+      <property>/systems/tune/pids-lat19-open</property>
     </condition>
     <expression>
       <product>
@@ -121,14 +123,14 @@ if you contacted me before making any changes to this software.
 	<output>/autopilot/internal/target-roll-deg</output>
   <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat2-out</property>
+    <property>/systems/tune/pids-lat19-out</property>
 	</output>
   </filter>
 
   <!--  Normalise Hdg Bug Error to +- 180 Deg  -->
   <filter>
 	<type>gain</type>
-	<name>Flt-HdgErr|180|=>HdgBugErrDeg</name>
+	<name>FLT-HdgErr|180|=>HdgBugErrDeg</name>
 	<debug>false</debug>
 	<input>
 		<property>/autopilot/settings/heading-bug-deg</property>
@@ -148,15 +150,15 @@ if you contacted me before making any changes to this software.
   <!-- Lookahead for Hdg Bug Error    -->
   <predict-simple>
   <debug>false</debug>
-  <name>LAH-HdgErr-deg</name>
-  <seconds>4.0</seconds>
+  <name>PRE-HdgErr-deg</name>
+  <seconds>8.0</seconds>
   <input>
     <prop>/autopilot/internal/heading-bug-error-deg</prop>
   </input>
   <output>
     <property>/autopilot/internal/aheading-bug-error-deg</property>
   </output>
-  <filter-gain>0.1</filter-gain>
+  <filter-gain>0.005</filter-gain>
   </predict-simple>
   
   <!-- Heading Bug Hold.  2 stage cascade controller. -->
@@ -201,12 +203,12 @@ if you contacted me before making any changes to this software.
     <!-- docn RollRate 15 deg/sec at 230Kt  Make 30@ Hdg Err Max demand -->
     <!--   30deg roll causes alt loss -->
 		<!--Kp>/autopilot/internal/target-kp-for-heading-deg</Kp-->
-		<Kp>-1.0000667 </Kp>
+		<Kp>-0.200</Kp>
 		<beta>1.0</beta>
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
 		<Td>0.001</Td>
-		<Ti>12.0008000</Ti>
+		<Ti>2.000</Ti>
 		<!--u_min>/autopilot/internal/heading-min-roll</u_min-->
 		<!--u_max>/autopilot/internal/heading-max-roll</u_max-->
 		<u_min>-20.0</u_min>
@@ -237,7 +239,7 @@ if you contacted me before making any changes to this software.
   <!-- bthp  kybd hotkey direct control -->
   <reference>
     <condition>
-      <property>/systems/tune/pids-lat1-open</property>
+      <property>/systems/tune/pids-lat19-open</property>
     </condition>
     <expression>
       <product>
@@ -252,7 +254,7 @@ if you contacted me before making any changes to this software.
 	</output>
   <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat1-out</property>
+    <property>/systems/tune/pids-lat19-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
@@ -282,7 +284,7 @@ if you contacted me before making any changes to this software.
 	</enable>
 	<input>
     <condition>
-      <property>/systems/tune/pids-lat2-open</property>
+      <property>/systems/tune/pids-lat29-open</property>
     </condition>
     <expression>
       <product>
@@ -295,7 +297,7 @@ if you contacted me before making any changes to this software.
 	<output>/autopilot/internal/target-roll-deg</output>
   <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat2-out</property>
+    <property>/systems/tune/pids-lat29-out</property>
 	</output>
 	<max-rate-of-change>3.0</max-rate-of-change>
 	<!-- bthp max-rate-of-change>6.0</max-rate-of-change-->
@@ -321,8 +323,21 @@ if you contacted me before making any changes to this software.
     </period>
   </filter>
 
+  <!-- Lookahead for Hdg Bug Error    -->
+  <predict-simple>
+  <debug>false</debug>
+  <name>PRE-Nav1Err-deg</name>
+  <seconds>4.0</seconds>
+  <input>
+    <prop>/autopilot/internal/nav1-heading-error-deg</prop>
+  </input>
+  <output>
+    <property>/autopilot/internal/pre-nav1-hdg-err-deg</property>
+  </output>
+  <filter-gain>0.1</filter-gain>
+  </predict-simple>
+  
   <!-- Nav1 hold.  2 stage cascade controller. -->
-
   <!-- Stage #1 sets target roll based on diff between current heading -->
   <!-- and target heading. -->
   <pid-controller>
@@ -336,7 +351,7 @@ if you contacted me before making any changes to this software.
   <!-- bthp  Inject input signal via kybd hotkey -->
   <input>
     <condition>
-      <property>/systems/tune/pids-lat2-open</property>
+      <property>/systems/tune/pids-lat28-open</property>
     </condition>
     <property>/systems/tune/poke-latr-mark</property>
   </input>
@@ -351,11 +366,11 @@ if you contacted me before making any changes to this software.
 	</output>
   <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
   <output>
-    <property>/systems/tune/pids-lat2-out</property>
+    <property>/systems/tune/pids-lat28-out</property>
 	</output>
 	<config>
-		<!--Kp>/autopilot/internal/target-kp-for-heading-deg</Kp-->
-		<Kp>-1.0</Kp>
+		<Kp>/autopilot/internal/target-kp-for-heading-deg</Kp>
+		<!--Kp>-1.0</Kp-->
 		<beta>1.0</beta>
 		<alpha>0.001</alpha>
 		<gamma>0.0</gamma>
@@ -399,7 +414,7 @@ if you contacted me before making any changes to this software.
   <!-- bthp  Inject input signal via kybd hotkey -->
   <reference>
     <condition>
-      <property>/systems/tune/pids-lat3-open</property>
+      <property>/systems/tune/pids-lat2-open</property>
     </condition>
     <expression>
       <product>
@@ -409,7 +424,7 @@ if you contacted me before making any changes to this software.
     </expression>
   </reference>
 	<reference>
-    <!-- WL filter output renamed to tgt-rol-deg and included  -->
+    <!-- bthp WL filter output renamed to tgt-rol-deg and included  -->
 		<condition>
 			<or>
 			  <equals>
@@ -432,14 +447,14 @@ if you contacted me before making any changes to this software.
 		</condition>
 		<property>/autopilot/internal/target-roll-deg</property>
 	</reference>
-	<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
+		<!-- hold wing level ('smooting' behaviour at VOR-transition) -->
     <!--   bthp: issue nasal only returns +ve tgtRoldeg near VOR ?? Section deleted -->  
 	<output>
 		<property>/autopilot/internal/aileron-servo</property>
 	</output>
 	<!--bthp: Copy signal to xbar: Stanza must not precede real output -->
-  <output>
-    <property>/systems/tune/pids-lat3-out</property>
+	<output>
+	  <property>/systems/tune/pids-lat2-out</property>
 	</output>
 	<config>
 		<Kp>/autopilot/internal/target-kp-for-heading-hold</Kp>
@@ -447,7 +462,7 @@ if you contacted me before making any changes to this software.
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
 		<Ti>/autopilot/internal/target-ti-for-heading-hold</Ti>
-		<Td>0.0010050</Td>
+		<Td>0.001</Td>
 		<u_min>-1.0</u_min>
 		<u_max>1.0</u_max>
 	</config>
@@ -459,7 +474,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<name>FltRoC-AilSrv=>AilrFCS</name>
+		<name>FLT-RoC-AilSrv=>AilrFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -488,7 +503,7 @@ if you contacted me before making any changes to this software.
 		<output>/controls/flight/aileron</output>
 		<output>/controls/flight/aileron-fcs</output>
 		<!-- bthp max-rate-of-change>0.8</max-rate-of-change-->
-		<max-rate-of-change>1.6</max-rate-of-change>
+		<max-rate-of-change>1.600</max-rate-of-change>
 	</filter>
 
   <!-- =============================================================== -->
@@ -574,15 +589,15 @@ if you contacted me before making any changes to this software.
 			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
 		</input>
 		<reference>
-			<condition>
-				<property>/systems/tune/pids-lat4-open</property>
-			</condition>
-			<expression>
-				<product>
-					<property>/systems/tune/poke-latr-mark</property>
-					<value>10.0</value>
-				</product>  
-			</expression>
+      <condition>
+        <property>/systems/tune/pids-lat4-open</property>
+      </condition>
+      <expression>
+        <product>
+          <property>/systems/tune/poke-latr-mark</property>
+          <value>10.0</value>
+        </product>  
+	    </expression>
 		</reference>
 		<reference>
 			<value>0.0</value>
@@ -608,7 +623,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<name>Flt-RoCRdrSrv=>RdrFCS</name>
+		<name>FLT-RoCRdrSrv=>RdrFCS</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
@@ -715,7 +730,7 @@ if you contacted me before making any changes to this software.
     </output>
 	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
-		  <property>/systems/tune/pids-vrt2-out</property>
+		  <property>/systems/tune/pids-vrt29-out</property>
 	  </output>
     <config>
       <!--Kp>/autopilot/internal/target-kp-for-pitch-hold</Kp-->
@@ -834,11 +849,11 @@ if you contacted me before making any changes to this software.
 	  </output>
     <config>
       <!-- 50Fps-3000fpm Max demand for 1000ft error: gain 50 / 1000  -->
-      <!--    Err term can be huge so D term Td, alpha must be squashed -->
+      <show-props>true</show-props>
       <Kp>0.1000100</Kp>
       <Ti>10.00</Ti>
-      <Td>0.01</Td>
-      <alpha>0.000001</alpha>
+      <Td>0.001</Td>
+      <alpha>0.1</alpha>
       <beta>1.0</beta>
       <gamma>0.0</gamma>
       <u_min>-25.0</u_min> <!-- minimum output clamp -->
@@ -942,14 +957,14 @@ if you contacted me before making any changes to this software.
     </output>
     <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
     <output>
-      <property>/systems/tune/pids-vrt2-out</property>
+      <property>/systems/tune/pids-vrt28-out</property>
 	  </output>
     <config>
-      <Kp>/autopilot/internal/target-kp-for-alt-hold</Kp>
-      <!--Kp>-0.002</Kp-->
+      <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
+      <Kp>-0.002</Kp>
       <beta>2.0</beta>
       <alpha>0.1</alpha>
-      <gamma>0.0</gamma>
+      <gamma>1.0</gamma>
       <Ti>20.0</Ti>
       <Td>0.00251</Td>
       <u_min>-1.0</u_min>
@@ -997,7 +1012,7 @@ if you contacted me before making any changes to this software.
     </output>
 	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
 	  <output>
-		  <property>/systems/tune/pids-vrt2-out</property>
+		  <property>/systems/tune/pids-vrt27-out</property>
 	  </output>
     <config>
       <Kp>/autopilot/internal/target-kp-for-gs-hold</Kp>     <!-- proportional gain -->
@@ -1118,7 +1133,7 @@ if you contacted me before making any changes to this software.
   <!-- =============================================================== -->
 	<filter>
 		<type>gain</type>
-		<name>Flt-UpFlt-ElvPosn=>ElvNasNoNo</name>
+		<name>FLT-UpFlt-ElvPosn=>ElvNasNoNo</name>
 		<debug>false</debug>
 		<enable>
 			<condition>
@@ -1368,7 +1383,7 @@ if you contacted me before making any changes to this software.
 
 	<filter>
 		<type>noise-spike</type>
-		<name>Flt-RoC-SpPtDg=>SpPitDgFltd</name>
+		<name>FLT-RoC-SpPtDg=>SpPitDgFltd</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 	        <enable>
@@ -1546,7 +1561,7 @@ if you contacted me before making any changes to this software.
 	<filter>
 		<type>noise-spike</type>
 		<!--name>SERVO-DRIVER:throttle</name-->
-		<name>Flt-RoC-ThrSrv=>4xThrs</name>
+		<name>FLT-RoC-ThrSrv=>4xThrs</name>
 		<debug>false</debug>
 		<feedback-if-disabled>true</feedback-if-disabled>
 		<enable>
