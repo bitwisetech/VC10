@@ -807,8 +807,8 @@ if you contacted me before making any changes to this software.
     </enable>
     <input>
       <!-- <prop>/position/altitude-ft</prop> -->
-      <!--prop>/instrumentation/altimeter/indicated-altitude-ft</prop-->
-      <property>/autopilot/internal/ahead-altitude-ft</property>
+      <prop>/instrumentation/altimeter/indicated-altitude-ft</prop>
+      <!--property>/autopilot/internal/ahead-altitude-ft</property-->
     </input>
     <!-- bthp  Inject input signal via kybd hotkey tgt 100x ft  -->
     <reference>
