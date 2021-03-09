@@ -817,8 +817,8 @@ if you contacted me before making any changes to this software.
     <name>PID-AltHldErr=>TgtFps~V1</name>
     <debug>false</debug>
     <enable>
-      <prop>/autopilot/locks/altitude</prop>
-      <value>altitude-hold</value>
+      <prop>autopilot/Bendix-PB-20/controls/ALT-active</prop>
+      <value>1</value>
     </enable>
     <input>
       <!-- <prop>/position/altitude-ft</prop> -->

@@ -121,7 +121,7 @@ var listenerApPB20ModeFunc = func {
 				setprop("autopilot/locks/altitude", "");
 			}
 			else {
-				setprop("autopilot/locks/altitude", "altitude-hold");
+				#setprop("autopilot/locks/altitude", "altitude-hold");
 			}
 			setprop("autopilot/locks/passive-mode", 0);
 			setprop("autopilot/locks/flare-mode", 0);
@@ -145,7 +145,7 @@ var listenerApPB20ModeFunc = func {
 				setprop("autopilot/locks/altitude", "pitch-hold");
 			}
 			else {
-				setprop("autopilot/locks/altitude", "altitude-hold");
+				#setprop("autopilot/locks/altitude", "altitude-hold");
 			}
 
 			# resets
@@ -162,7 +162,7 @@ var listenerApPB20ModeFunc = func {
 				setprop("autopilot/locks/altitude", "");
 			}
 			else {
-				setprop("autopilot/locks/altitude", "altitude-hold");
+				#setprop("autopilot/locks/altitude", "altitude-hold");
 			}
 			setprop("autopilot/locks/passive-mode", 0);
 			setprop("autopilot/locks/flare-mode", 0);
@@ -188,7 +188,7 @@ var listenerApPB20ModeFunc = func {
 				setprop("autopilot/locks/altitude", "");
 			}
 			else {
-				setprop("autopilot/locks/altitude", "altitude-hold");
+				#setprop("autopilot/locks/altitude", "altitude-hold");
 			}
 			gsMANAltControl();
 
@@ -325,7 +325,7 @@ setlistener("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", listenerApPB20MAN
 ##
 # ALT switch
 var listenerApPB20AltFunc = func {
-
+    print("hear ALT()mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));
 	if (getprop("autopilot/Bendix-PB-20/mutex") == "") {
 		# print("ALT get mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));      
 		bendixPB20MutexSet("PB20-ALT");
@@ -348,7 +348,7 @@ var listenerApPB20AltFunc = func {
 			var altitudeFt = getprop("instrumentation/altimeter/indicated-altitude-ft") + altOffset;
 			setprop("autopilot/settings/target-altitude-ft", altitudeFt);
 
-			setprop("autopilot/locks/altitude", "altitude-hold");
+			##??setprop("autopilot/locks/altitude", "altitude-hold");
 		}
 		else {
         	#print("controls ! ALT active");      
@@ -368,8 +368,8 @@ var listenerApPB20AltFunc = func {
 	else {
 		setprop("autopilot/locks/altitude", "");
 	}
-  #print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
-  #          "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
+  print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
+            "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
 }
 
 ## cannot listen on both since both changing looks like twice hit 
@@ -434,13 +434,13 @@ listenerApPB20SetAltitudeFunc = func {
 
 	if (getprop("autopilot/locks/altitude") == "altitude-hold") {
 		setprop("autopilot/Bendix-PB-20/controls/active", 1);
-		setprop("autopilot/Bendix-PB-20/controls/ALT-active", 1);
+		#setprop("autopilot/Bendix-PB-20/controls/ALT-active", 1);
 		if (getprop("autopilot/Bendix-PB-20/controls/mode-selector") == 1) {
 			setprop("autopilot/locks/heading", "wing-leveler");
 		}
 	}
 	else {
-		setprop("autopilot/Bendix-PB-20/controls/ALT-active", 0);
+		#setprop("autopilot/Bendix-PB-20/controls/ALT-active", 0);
 	}
 	var apa = getprop("/autopilot/Bendix-PB-20/controls/active") or 0;
 	if(!apa){
@@ -677,7 +677,7 @@ var pb20_mini_hdgOff = func(dbug=0) {
   }  
 }
 
-var pb20_mini_hdgOnf = func(dbug=0) {
+var pb20_mini_hdgOn = func(dbug=0) {
   setprop("autopilot/Bendix-PB-20/controls/mode-selector", 0);
   if ( dbug ) {
     print("pb20_mini_hdgOn");
