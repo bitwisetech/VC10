@@ -10,11 +10,11 @@
 
   <!--    -->
   <filter>
-    <name>xbar-PID-D-Term</name>
+    <name>xbar-PID-Term-d</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-	  <property>autopilot/internal/pid/D-Term</property>
+	  <property>autopilot/internal/pid/Term-D</property>
     </input>
     <output>
 		<property>/systems/tune/afdi-Ch0</property>
@@ -22,11 +22,11 @@
   </filter>
 
   <filter>
-    <name>xbar-PID-I-Term</name>
+    <name>xbar-PID-Term-I</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-	  <property>autopilot/internal/pid/I-Term</property>
+	  <property>autopilot/internal/pid/Term-I</property>
     </input>
     <output>
 		<property>/systems/tune/afdi-Ch1</property>
@@ -34,11 +34,11 @@
   </filter>
 
   <filter>
-    <name>xbar-PID-P-Term</name>
+    <name>xbar-PID-Term-P</name>
     <type>gain</type>
     <gain>1.0</gain>
     <input>
-	  <property>autopilot/internal/pid/P-Term</property>
+	  <property>autopilot/internal/pid/Term-P</property>
     </input>
     <output>
 		<property>/systems/tune/afdi-Ch2</property>

@@ -325,7 +325,7 @@ setlistener("autopilot/Bendix-PB-20/settings/pitch-wheel-deg", listenerApPB20MAN
 ##
 # ALT switch
 var listenerApPB20AltFunc = func {
-    print("hear ALT()mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));
+    #print("hear ALT()mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));
 	if (getprop("autopilot/Bendix-PB-20/mutex") == "") {
 		# print("ALT get mutex: ", getprop("autopilot/Bendix-PB-20/mutex"));      
 		bendixPB20MutexSet("PB20-ALT");
@@ -368,8 +368,8 @@ var listenerApPB20AltFunc = func {
 	else {
 		setprop("autopilot/locks/altitude", "");
 	}
-  print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
-            "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
+  #print("exit listenerApPB20AltFunc ap/lcks/alti: ", getprop("autopilot/locks/altitude"),
+  #      "  ALT-active: ", getprop("autopilot/Bendix-PB-20/controls/ALT-active") );
 }
 
 ## cannot listen on both since both changing looks like twice hit 
@@ -614,18 +614,6 @@ var hear_Damper_2active = func(node) {
 #
 setlistener("/autopilot/Bendix-PB-20/controls/Damper-2active", hear_Damper_2active);
 
-## Helper for e.g. joystick call to alter T/F value 
-var toggle_prop = func( tProp, dbug=0) {
-	if ( dbug ) {
-		print("entr toggle_prop: ", tProp, ": ", getprop(tProp)); 
-	}
-	setprop(tProp, (1 - ( getprop(tProp) or 0)));
-	if ( dbug ) {
-		print("exit 
-        toggle_prop: ", tProp, ": ", getprop(tProp)); 
-	}
-}  
-
 ##
 var pb20_sequ_modeSelector = func() {
   # PB-20       0:HDG 1:MAN 2:LOC 3:GS-AUTO 4:GS-MAN 5:FLARE
@@ -657,14 +645,6 @@ var pb20_sequ_modeSelector = func() {
 }  
 
 ##
-var toggle_prop = func( tProp, dbug=0) {
-  setprop(tProp, 1 - ( getprop(tProp) or 0));
-  if ( dbug ) {
-    print("toggle_prop: ", getprop(tProp)); 
-  }
-}  
-
-##
 var pb20_mini_hdgOff = func(dbug=0) {
   setprop("autopilot/Bendix-PB-20/controls/mode-selector", 1);
 	var apa = getprop("autopilot/Bendix-PB-20/controls/active") or 0;            	
@@ -683,3 +663,28 @@ var pb20_mini_hdgOn = func(dbug=0) {
     print("pb20_mini_hdgOn");
   }  
 }
+
+## Helper for e.g. joystick call to alter T/F value 
+var toggle_prop = func( tProp, dbug=0) {
+	if ( dbug ) {
+		print("entr toggle_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+	setprop(tProp, (1 - ( getprop(tProp) or 0)));
+	if ( dbug ) {
+		print("exit 
+        toggle_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+}  
+
+## Helper for e.g. joystick call to alter T/F value 
+var incr_prop = func( tProp, tIncr, dbug=0) {
+	if ( dbug ) {
+		print("entr incr_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+	setprop(tProp, ((getprop(tProp) or 0) + tIncr ));
+	if ( dbug ) {
+		print("exit 
+        incr_prop: ", tProp, ": ", getprop(tProp)); 
+	}
+}  
+

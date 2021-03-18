@@ -208,7 +208,7 @@ if you contacted me before making any changes to this software.
 		<alpha>0.1</alpha>
 		<gamma>0.0</gamma>
 		<Td>0.001</Td>
-		<Ti>2.000</Ti>
+		<Ti>12.0008000</Ti>
 		<!--u_min>/autopilot/internal/heading-min-roll</u_min-->
 		<!--u_max>/autopilot/internal/heading-max-roll</u_max-->
 		<u_min>-20.0</u_min>
@@ -424,7 +424,7 @@ if you contacted me before making any changes to this software.
     </expression>
   </reference>
 	<reference>
-    <!-- bthp WL filter output renamed to tgt-rol-deg and included  -->
+    <!-- WL filter output renamed to tgt-rol-deg and included  -->
 		<condition>
 			<or>
 			  <equals>
@@ -503,7 +503,7 @@ if you contacted me before making any changes to this software.
 		<output>/controls/flight/aileron</output>
 		<output>/controls/flight/aileron-fcs</output>
 		<!-- bthp max-rate-of-change>0.8</max-rate-of-change-->
-		<max-rate-of-change>1.600</max-rate-of-change>
+		<max-rate-of-change>1.6</max-rate-of-change>
 	</filter>
 
   <!-- =============================================================== -->
@@ -589,15 +589,15 @@ if you contacted me before making any changes to this software.
 			<property>instrumentation/slip-skid-ball/indicated-slip-skid</property>
 		</input>
 		<reference>
-      <condition>
-        <property>/systems/tune/pids-lat4-open</property>
-      </condition>
-      <expression>
-        <product>
-          <property>/systems/tune/poke-latr-mark</property>
-          <value>10.0</value>
-        </product>  
-	    </expression>
+			<condition>
+				<property>/systems/tune/pids-lat4-open</property>
+			</condition>
+			<expression>
+				<product>
+					<property>/systems/tune/poke-latr-mark</property>
+					<value>10.0</value>
+				</product>  
+			</expression>
 		</reference>
 		<reference>
 			<value>0.0</value>
@@ -843,13 +843,13 @@ if you contacted me before making any changes to this software.
     <output>
       <prop>/autopilot/internal/target-climb-rate-fps</prop>
     </output>
-	  <!--bthp: Copy signal to xbar: Stanza must not precede real output -->
+		<!--bthp: Copy signal to xbar: Stanza must not precede real output -->
     <output>
-		  <property>/systems/tune/pids-vrt1-out</property>
-	  </output>
+		<property>/systems/tune/pids-vrt1-out</property>
+	</output>
     <config>
       <!-- 50Fps-3000fpm Max demand for 1000ft error: gain 50 / 1000  -->
-      <show-props>true</show-props>
+      <!--    Err term can be huge so D term Td, alpha must be squashed -->
       <Kp>0.1000100</Kp>
       <Ti>10.00</Ti>
       <Td>0.001</Td>
@@ -916,6 +916,10 @@ if you contacted me before making any changes to this software.
 	    <condition>
 		    <or>
 			    <equals>
+					<property>autopilot/Bendix-PB-20/controls/ALT-active</property>
+					<value>1</value>
+			    </equals>
+			    <equals>
 				    <property>/autopilot/locks/altitude</property>
 				    <value>agl-hold</value>
 			    </equals>
@@ -960,13 +964,13 @@ if you contacted me before making any changes to this software.
       <property>/systems/tune/pids-vrt28-out</property>
 	  </output>
     <config>
-      <!--Kp>/autopilot/internal/target-kp-for-alt-hold</Kp-->
-      <Kp>-0.002</Kp>
-      <beta>2.0</beta>
+      <Kp>/autopilot/internal/target-kp-for-alt-hold</Kp>
+      <!--Kp>-0.002</Kp-->
+      <beta>1.0</beta>
       <alpha>0.1</alpha>
-      <gamma>1.0</gamma>
-      <Ti>20.0</Ti>
-      <Td>0.00251</Td>
+      <gamma>0.0</gamma>
+      <Ti>4.0</Ti>
+      <Td>0.001</Td>
       <u_min>-1.0</u_min>
       <u_max>1.0</u_max>
     </config>
@@ -1139,12 +1143,16 @@ if you contacted me before making any changes to this software.
 			<condition>
 				<or>
 					<equals>
-						<property>/autopilot/locks/altitude</property>
-						<value>altitude-hold</value>
+						<property>autopilot/Bendix-PB-20/controls/ALT-active</property>
+						<value>1</value>
 					</equals>
 					<equals>
 						<property>/autopilot/locks/altitude</property>
 						<value>agl-hold</value>
+					</equals>
+					<equals>
+						<property>/autopilot/locks/altitude</property>
+						<value>altitude-hold</value>
 					</equals>
 					<equals>
 						<property>/autopilot/locks/altitude</property>
@@ -1219,6 +1227,10 @@ if you contacted me before making any changes to this software.
         </and-->
 				<or>
 					<equals>
+						<property>autopilot/Bendix-PB-20/controls/ALT-active</property>
+						<value>1</value>
+					</equals>
+					<equals>
 						<property>/autopilot/locks/altitude</property>
 						<value>altitude-hold</value>
 					</equals>
@@ -1256,7 +1268,7 @@ if you contacted me before making any changes to this software.
 		<output>/controls/flight/elevator-fcs</output>
     <!--max-rate-of-change>0.2</max-rate-of-change-->
     <!--  bthp disable    -->
-    <max-rate-of-change>99990.2</max-rate-of-change>
+    <max-rate-of-change>0.2</max-rate-of-change>
 	</filter>
 
   <!-- =============================================================== -->
